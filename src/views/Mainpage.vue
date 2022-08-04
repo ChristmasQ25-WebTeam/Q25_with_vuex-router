@@ -5,7 +5,7 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.name }}</span>'s</div> 
+          <div><span class="userName">{{ userInfo.name }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
@@ -29,11 +29,53 @@
         <span><img src="../assets/07_download.png" id="downloadIcon"></span>
       </div>
   </div>
- </div>
 
+<!-- 자몽: 질문 답변하기 디자인 view -->
+<!--글 발행기능 아직 구현 X => 공부필요-->
+  <div v-if="qna_request_page==true">
+
+<div class ="qna_requset_header">
+ <!-- <i  class="material-icons">keyboard_arrow_left</i>-->
+  <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
+</div>
+
+<div class="qna_request_header_hr">
+<hr>
+</div>
+
+<div class="request_img_icon">
+<img src="../assets/08_question_pic01.png" alt="">
+</div>
+
+<div class="request_question">
+  <span class = "question_number">{{question_25_content[gift_select].question_num}}</span>
+  <span class = "question_contents">{{question_25_content[gift_select].question}}</span>
+</div>
+
+<!--답변창 180글자까지만 작성 가능  -->
+<form id= "request_textarea" action="" method="POST">
+<textarea v-model="qna_request" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180"></textarea>
+<br/>
+<span id="counter">({{qna_request.length}}자 / 최대 180자)</span>
+</form>
+
+<div class="requset_share">
+  <span class ="text">이미지 공유하기</span>
+  <img src="../assets/07_download.png" alt="">
+</div>
+
+<div id="jm_button">
+<button class="jm_finish-btn2" @click="submit">완료</button>
+</div>
+  </div>
+
+
+ </div>
 </template>
 
 <script>
+/* eslint-disable */
+import question_25 from '../assets/question_25.js';
 import { mapState } from 'vuex'
 export default {
     computed: {
@@ -41,8 +83,13 @@ export default {
     },
     data() {
         return{
-            Q_list_page : true,
+            Q_list_page : false,
             Q_gather_page : false,
+            qna_request_page:true,
+            qna_request:[],
+            question_25_content:question_25,
+            gift_select:0,
+
             questionList: [
             '한 해 동안 가장 잘했다고 생각되는 결정 3가지',
             '올해 읽었던 책이나 본 영화, 공연 중 가장 인상깊었던 것과 그 이유는?',
@@ -71,6 +118,8 @@ export default {
       this.Q_list_page=true;
       this.Q_gather_page=false;
     }
+
+
     }
 }
 </script>
@@ -114,7 +163,7 @@ body {
   background-color: #920000;
   align-items:  center;
   justify-content: center;
-} 
+}
 
 /* 리지 */
 .container {
@@ -205,7 +254,7 @@ body {
 }
 
 #Q_inquestion {
-  color: #920000; 
+  color: #920000;
   font-family: 'Sorts Mill Goudy', serif;
 }
 
@@ -226,4 +275,128 @@ display: none;
   cursor: pointer;
   float: right;
 }
+
+
+/* 자몽 - 질문 답변하기 css */
+
+.qna_requset_header{
+  display: flex;
+  align-content: center;
+  justify-content:space-evenly;
+  padding-right:145px;
+}
+
+.qna_requset_header .material-icons {
+  color: #fff;
+  font-size: 42px;
+  font-weight: 800;
+}
+.qna_request_header_hr hr {
+  background-color: rgb(215, 213, 213);
+  border: 0;
+  height: 0.8px;
+  margin-top: 10px;
+  width:120px;
+  margin-left : auto;
+  margin-right : auto;
+}
+
+.qna_requset_header .request_day_number{
+  padding-left:90px;
+
+}
+
+.request_img_icon img{
+  width: 170px;
+  height: 170px;
+  padding-top: 20px;
+}
+
+.request_day_number {
+  font-size: 30px;
+  color: #FFFFFF;
+  font-family: "NanumSquareRound";
+  font-weight: 800
+}
+
+.question_number{
+  padding: 6px;
+}
+
+.question_contents{
+  margin-left : auto;
+  margin-right : auto;
+  }
+.request_question{
+  display: flex;
+  flex-direction: column;
+  color: #FFFFFF;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+textarea:focus {outline: none;}
+textarea::placeholder {
+	color: #ccc;
+  padding: 20px 5px;
+}
+
+#request_textarea{
+  margin-top: 30px;
+}
+
+#request_textarea textarea{
+  width:270px;
+  height: 160px;
+  border-radius: 2%;
+  border: none;
+  resize: none;
+}
+#request_textarea #counter{
+color:rgb(153, 151, 151);
+font-size: 11px;
+padding-left:180px;
+}
+
+.jm_finish-btn2{
+  font-family: "NanumSquareRound";
+  font-size: 16px;
+  font-weight: 800;
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 120px;
+  height: 42px;
+  margin-top: 40px;
+}
+
+.requset_share{
+  font-family: "NanumSquareRound";
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  padding:3px 0px 0px 130px ;
+
+}
+.requset_share img{
+  width: 20px;
+  height:20px;
+  padding-left: 15px;
+}
+
+
+
+/* - 메인컬러
+    - 배경색(red) : 920000
+- 서브컬러
+    - yellow : FFF500
+    - white : FFFFFF
+    - black : 000000
+    - beige : F4E7B6
+- 폰트 컬러
+    - yellow : FFF500
+    - white : FFFFFF
+    - black : 000000
+    - gray : D9D9D9 */
+</style>
 </style>
