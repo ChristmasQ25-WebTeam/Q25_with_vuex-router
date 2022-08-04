@@ -37,12 +37,12 @@
       <div v-for="i in 8" :key="i">
         <div @click="open_question" v-for="j in 3" :key="j">
           <!-- <img src="./assets/13_oops.png" alt="" v-if="filled_sticker"> -->
-          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox'>
-          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox'>
+          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
+          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
           {{3*(i-1)+j}}
         </div>
         <div  @click="open_question" v-if='i==8'>
-          <img src="../assets/06_gift25.png" alt="" id="giftbox_25">
+          <img src="../assets/06_gift25.png" alt="" id="giftbox_25" @click="togo_write_answer">
           25
         </div>
       </div>
@@ -151,7 +151,7 @@ export default {
 
             nickName : '',
 
-            qna_request_page:true,
+            qna_request_page:false,
             qna_request:[],
             question_25_content:question_25,
             gift_select:0,
@@ -205,6 +205,10 @@ export default {
     },
     togo_setting_page() {
       this.setting_page=true;
+    },
+    togo_write_answer() {
+      this.qna_request_page=true;
+      this.Q_list_page=false;
     }
 
 
