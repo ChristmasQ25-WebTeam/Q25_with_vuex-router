@@ -13,7 +13,7 @@
   </div>
 
     <div v-if="introduction_page==true">
-    <div class="container">    
+    <div class="container">
       <div id="title">Christmas Q25</div>
       <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
       <div class="introductionBox">
@@ -41,7 +41,7 @@ export default {
   },
 	methods: {
     		gotoLogin() {
-            	     this.$router.push('/login');
+        this.$router.push('/login');
                 },
         introBtnOn() {
           this.start_page=false;
