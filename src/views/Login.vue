@@ -112,6 +112,89 @@
       <button class="jm_finish-btn" @click="no_email_modal = true">완료</button>
 </div>
 
+<!-- 미니 : 회원가입 view-->
+  <div v-if="signUp_page==true" id="signUp_page">
+    <div class="modal">
+      <div class="modal_background check-password_form" v-if="pwformOpen == true">
+        <div class="modal_box">
+          <h4>비밀번호 형식을 확인해주세요</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <div class="modal_background check-password" v-if="pwOpen == true">
+        <div class="modal_box">
+          <h4>비밀번호를 입력해주세요</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <div class="modal_background check-email_form" v-if="emailformOpen == true">
+        <div class="modal_box">
+          <h4>이메일 형식을 확인해주세요</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <!-- api 연동 후 사용할 것 -->
+      <!-- <div class="modal_background check-email" v-if="emailOpen == true">
+        <div class="modal_box">
+          <h4>이미 등록된 이메일입니다</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div> -->
+      <div class="modal_background check-nickname" v-if="nickOpen == true">
+        <div class="modal_box">
+          <h4>닉네임을 입력해주세요</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div id="wrap1">
+        <i class="material-icons" @click="togo_login_page">keyboard_arrow_left</i>
+        <span @click="togo_login_page">홈으로</span>
+      </div>
+      <div id="wrap2">
+        <h3>Order</h3>
+        <ul>
+          <li>
+            <div class="label-box">
+              <span>페이지에 표기될 닉네임을 입력해주세요!</span>
+            </div>
+            <div class="input-box">
+              <input type="text" class="inputText" v-model="nickName" placeholder="닉네임을 입력해주세요!">
+            </div>
+          </li>
+          <li>
+            <div class="label-box">
+              <span>이메일을 입력해주세요!</span>
+            </div>
+            <div class="input-box email-input">
+              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!">
+              <br>
+              <!-- <button class="overlap-btn" @click="chkOverlap">중복확인</button>
+              <img src="../src/assets/05_check.png" alt="중복확인" v-if="chkEmail == true"> -->
+            </div>
+          </li>
+          <li>
+            <div class="label-box">
+              <span>아무나 작성할 수 없도록!<br>비밀번호를 입력해주세요</span>
+            </div>
+            <div class="input-box pw-input">
+              <input type="password" class="inputText" id="inputPW" v-model="password" placeholder="비밀번호를 입력해주세요!" @change="chkInput">
+              <p :class="[chkPw === false ? 'unchk' : 'chk']">*영문/숫자 포함 6자 이상</p>
+            </div>
+          </li>
+        </ul>
+        <p>confirm</p>
+        <img id="stamp_img" src="../assets/02_stamp.png" alt="스탬프" v-if="pwformOpen == false && pwOpen == false && emailOpen == false && nickOpen == false">
+      </div>
+      <div id="wrap3">
+        <button class="finish-btn" @click="submit">완료</button>
+      </div>
+    </div>
+
+  </div>
+
 
 </div>
 </template>
@@ -121,13 +204,29 @@ import { mapState, mapActions } from 'vuex'
 export default {
   data() {
     return {
-      email: null,
-      password : null,
-      login_page: true,
       signUp_page: false,
+      complete_page: false,
+      login_page: true,
       pw_find_page: false,
       pk_find_modal: false,
       no_email_modal: false,
+
+      email: null,
+      password : null,
+      nickName: '',
+      질문데이터: '부여된 랜덤 질문 리스트 데이터',
+      ClickButton: false,
+      nickOpen: false,
+      pwOpen: false,
+      chkPw: true,
+      chkNum: /[0-9]/,
+      chkEng: /[a-zA-Z]/,
+      chkEmailForm: /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      chkEmail: false,
+      emailOpen: false,
+      pwformOpen: false,
+      emailformOpen: false
+     
     }
   },
   computed: {
@@ -145,19 +244,25 @@ export default {
       this.signUp_page=false;
     },
 
-    submit(e){
+    submit (e) {
       e.preventDefault();
       if (this.nickName == ''){
         this.nickOpen = true;
-        this.emailOpen = false;
+        this.emailformOpen = false;
+        // this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
       }
-      else if (this.chkEmail == false){
-        this.emailOpen = true;
+      else if (!this.chkEmailForm.test(this.email)){
+        this.emailformOpen = true;
         this.pwOpen = false;
         this.pwformOpen = false;
       }
+      // else if (this.chkEmail == false){
+      //   this.emailOpen = true;
+      //   this.pwOpen = false;
+      //   this.pwformOpen = false;
+      // }
       else if (this.password == ''){
         this.pwOpen = true;
         this.pwformOpen = false;
@@ -171,14 +276,20 @@ export default {
       }
     },
 
-    check(){
+    check () {
       this.nickOpen = false;
       this.pwOpen = false;
       this.emailOpen = false;
       this.pwformOpen = false;
-      },
+      this.emailformOpen = false;
+      this.byeemailOpen = false;
+      this.byepwOpen = false;
+      this.oldpwOpen = false;
+      this.newpwOpen = false;
+      this.setting_page = false;
+    },
 
-      chkInput(){
+    chkInput () {
       if (this.password.length < 6){
         this.chkPw = false;
       }
@@ -515,6 +626,211 @@ header {
   font-weight: bold;
   color: #920000;
   margin-top: 30px;
+}
+
+/* 미니 */
+@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+ul, li {list-style: none;}
+span {vertical-align: baseline;}
+
+.modal {
+  position: relative;
+  z-index: 2;
+}
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+.modal_background {
+  width: 360px;
+  height: 640px;
+  background: rgba(217,217,217,0.7);
+  position: absolute;
+  left: -19px;
+}
+.modal_background .modal_box {
+  width: 210px;
+  height: 100px;
+  background: #F4E7B6;
+  border-radius: 10px;
+  padding: 16px;
+  margin: 246px 59px;
+}
+.modal_background .modal_box h4 {
+  padding: 17px 0 27px 0;
+  border-bottom: 0.3px solid #000;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'NanumSquareRound';
+}
+/* .modal_background.check-email .modal_box h4 {
+  padding: 6px 0 18px 0;
+  border-bottom: 0.3px solid #000;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'NanumSquareRound';
+} */
+.modal_background.check-oldpw .modal_box h4 {
+  padding: 10px 0 14px 0;
+  border-bottom: 0.3px solid #000;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'NanumSquareRound';
+}
+.modal_background .modal_box button {
+  padding: 16px 0 0 0;
+  border: none;
+  background: #F4E7B6;
+  color: #920000;
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'NanumSquareRound';
+}
+#wrap1 {
+  text-align: left;
+  height: 60px;
+  position: relative;
+}
+#wrap1 .material-icons {
+  position: absolute;
+  top: 8px;
+  /* left: 10px; */
+  right: 295px;
+  display: inline-block;
+  color: #fff;
+  font-size: 42px;
+  font-weight: 800;
+}
+#wrap1 span {
+  position: absolute;
+  top: 16px;
+  /* left: 50px; */
+  right: 238px;
+  display: inline-block;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  font-family: 'NanumSquareRound';
+  padding: 0 0 26px 0;
+}
+
+#wrap2 {
+  /* text-align: center;
+  padding: 10px 0; */
+  position: relative;
+  width: 290px;
+  height: 474px;
+  padding: 16px;
+  border-radius: 5px;
+  background-color: #F4E7B6;
+  font-family: 'NanumSquareRound';
+}
+#wrap2 h3 {
+  font-family: 'Sorts Mill Goudy', serif;
+  font-weight: 500;
+  font-size: 32px;
+  border-bottom: 0.3px solid #000;
+  padding: 10px;
+}
+
+#wrap2 ul {
+  padding: 28px 0 0 0;
+}
+#wrap2 li .label-box span {
+  font-weight: 800;
+  font-size: 16px;
+}
+#wrap2 li .input-box {
+  position: relative;
+  padding: 18px 0 46px 0;
+}
+
+/* #wrap2 li .input-box.email-input {
+  position: relative;
+  padding: 18px 0 28px 0;
+} */
+#wrap2 li .input-box.pw-input {
+  position: relative;
+  padding: 18px 0 26px 0;
+}
+#wrap2 li .input-box .inputText {
+  width: 200px;
+  height: 25px;
+  border: none;
+  border-radius: 5px;
+}
+#wrap2 li .input-box .inputText::placeholder {
+  font-family: 'NanumSquareRound';
+  text-align: center;
+  font-weight: 800;
+  color: #d9d9d9;
+}
+#wrap2 li .input-box .overlap-btn {
+  margin: 10px 0 0 0;
+  font-family: 'NanumSquareRound';
+  border: none;
+  border-radius: 6px;
+  background: #920000;
+  width: 49px;
+  height: 24px;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+}
+#wrap2 li .input-box img {
+  position: absolute;
+  color: #920000;
+  width: 15px;
+  height: 15px;
+  top: 57px;
+  padding: 0 0 0 12px;
+}
+#wrap2 li .input-box p {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 13px 0 0 0;
+}
+#wrap2 li .input-box .chk {
+
+}
+#wrap2 li .input-box .unchk {
+  color: #920000;
+}
+#wrap2 > p {
+  font-family: 'Sorts Mill Goudy', serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+  text-align: right;
+  padding: 0 35px 0 0;
+}
+#wrap2 #stamp_img {
+  width: 38px;
+  position: absolute;
+  right: 27px;
+  bottom: 7px;
+}
+
+#wrap3 {
+  text-align: center;
+  padding: 16px 0;
+}
+#wrap3 .finish-btn {
+  font-family: 'NanumSquareRound';
+  font-size: 16px;
+  font-weight: 800;
+  background: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 168px;
+  height: 42px;
+}
+
+#signUp_page {
+  /* padding: 25px;
+  border-radius: 5px;
+  background-color: #F4E7B6; */
 }
 
 </style>
