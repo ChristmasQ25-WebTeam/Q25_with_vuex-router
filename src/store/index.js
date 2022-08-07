@@ -1,7 +1,7 @@
+import axios from 'axios'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '../router/index.js'
-import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -88,6 +88,17 @@ export default new Vuex.Store({
       //         commit('loginSuccess', selectedUser)
       //         router.push({name:'mainpage'})
       //       }
+          // else if (selectedUser.password !== loginObj.password)
+          //    commit('loginPwError')
+          //   else{
+          //     commit('loginSuccess', selectedUser)
+          //     router.push({name:'mainpage'})
+              
+              // qlist페이지(mainpage)로 넘어갈 때 api받아오는 코드 구현 중 -엘 
+              // axios.get('http://localhost:3000/members/question').then((response) => settodo(response.data))
+              // return console.log('success')
+              
+            }
     },
     close({ state, commit }) {
       commit('closeit')

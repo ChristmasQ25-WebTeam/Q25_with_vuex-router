@@ -1,5 +1,6 @@
 <template>
 <div>
+
 <!-- 엘 : 회원별 박스 view -->
   <div v-if="ooops==true" id="ooopsBox_bg">
     <div id="ooopsBox">
@@ -15,7 +16,7 @@
             조금만 기다려주세요:)
           </div>
           <div>
-            <img src="@/assets/03_gift_opened_sticker.png" alt="">
+            <img src="@/assets/13_oops.png" alt="">
           </div>
           <div class="ooops_line"></div>
         </div>
@@ -32,34 +33,27 @@
       <p>당신의 1년을 정리하는 25개의 질문</p>
       <p> 선물상자는 1번부터 열어주세요 :) </p>
     </div>
-    <div class="newcontents">
-      <!-- 반복문활용 -->
-      <div v-for="i in 8" :key="i">
-        <div @click="open_question" v-for="j in 3" :key="j">
-          <!-- <img src="./assets/13_oops.png" alt="" v-if="filled_sticker"> -->
-          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
-          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
-          {{3*(i-1)+j}}
-        </div>
-        <div  @click="open_question" v-if='i==8'>
-          <img src="../assets/06_gift25.png" alt="" id="giftbox_25" @click="togo_write_answer">
-          25
-        </div>
+
+    <div id="allBox">
+      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
+        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        {{i+1}}
       </div>
-
-      <!-- 그냥 나열 -->
-      <!-- <div>
-        <div id="box_1">
-          <img src="" alt="">
-          1
-        </div>
-        <div></div>
-        <div></div>
-      </div> -->
-
     </div>
     <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
   </div>
+
+<!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
+  <div v-if="loading_page==true" id="loading_page">
+    <div class="title">
+      <div><span class="userName">{{ userInfo.name }}</span>'s</div> 
+      <div>Christmas Q25</div>
+      <div id="title_line"></div>
+      <p>당신의 1년을 정리하는 25개의 질문</p>
+      <!-- <img :src="require(`@/assets/${dayLoading.dayImg}`)" alt="image" id='dayImg'> -->
+    </div>
+  </div>
+
 <!-- 리지 : 답변 모아보기 view -->
   <div v-if="Q_gather_page==true">
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
@@ -275,18 +269,28 @@
 /* eslint-disable */
 import question_25 from '../assets/question_25.js';
 import { mapState } from 'vuex'
+import axios from 'axios'
+import data from '../assets/test_data1.js';
+import data2 from '../assets/test_data2.js';
+
 export default {
+    // data : () => ({
+    //   boxImg : ''
+    // }),
     computed: {
         ...mapState(['userInfo'])
     },
     data() {
         return{
-
+            질문상자들 : data,
+            day이미지 : data2,
             ooops : false,
             Q_list_page : true,
             Q_gather_page : false,
 
             nickName : '',
+            opened : 1,
+            answerY_N:0,
 
 
             start_page : true,
@@ -349,6 +353,8 @@ export default {
             changepwOpen: false,
             emailformOpen: false,
             chknewPw: true,
+
+
         }
     },
     methods: {
@@ -504,22 +510,27 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target.data);
-      // if(this.answer==1){
-      //   this.ooops=true;
-      // }
-      // else if(this.answer==null){
-      //   this.Q_list_page=false;
-      //   this.motion_page=true;
-
-      // }
-
-      // var numBer = event.path[0].nextSibling;
-      // if(this.answer!=null){
-      //   console.log(this.ooops = true)
-        // console.log(this.$refs.getNum[index.index].innerText);
-
-      // }
+      console.log(event.target.nextSibling)
+      // const testqNum = event.target.nextSibling;
+      // console.log(question.opened)
+      // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로  
+      // while(question.qNum==testqNum){
+        if(this.opened==0){
+          this.ooops=true;
+        }
+        else if(this.opened==1){
+          if(this.answerY_N==0){
+            // this.loading_page=true;
+            this.qna_request_page=true;
+            this.Q_list_page=false;
+          }
+         else if(this.answerY_N==1){
+            this.qna_request_page=true;
+           this.Q_list_page=false;
+        }
+        }
+      
+      // };
     },
     togo_setting_page() {
       this.setting_page=true;
@@ -591,8 +602,12 @@ body {
   background-color: #00000091;
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
+  left: 0px;
+  top: 0;
+  /* position: absolute; */
   /* position: relative; */
+  z-index: 1;
 }
 #ooopsBox {
   position: relative;
@@ -646,6 +661,7 @@ body {
   cursor: pointer;
 }
 #Q_list_page {
+  z-index: 0;
   overflow: scroll;
   /* position: relative; */
   display: flex;
@@ -687,40 +703,30 @@ body {
   font-size: 13px;
   margin-top: 5px;
 }
-.newcontents {
+#allBox {
   height: 400px;
   width: 350px;
   display: flex;
-  /* position: sticky; */
   overflow: scroll;
-  flex-direction: column;
   align-items: center;
-  /* margin-top: 30px; */
-  /* padding-top: 175px; */
+  justify-content: center;
+  flex-wrap: wrap;
   background-color: #9b1010;
   border-radius: 10px;
   padding-bottom: 20px;
 
 }
-.newcontents > p {
-  font-family: 'NanumSquareRound';
-  color: white;
-}
-.newcontents > div {
+#allBox > div {
   font-family: 'OFL Sorts Mill Goudy TT';
   font-size: 21px;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
-}
-.newcontents > div > div {
-  display: flex;
-  flex-direction: column;
+  margin: 15px;
   color: white;
   cursor: pointer;
-  margin: 0 16px;
 }
 #giftbox {
   width: 73px;
