@@ -27,11 +27,11 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+      <div><span class="userName">{{ nickName1 }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <p> 선물상자는 1번부터 열어주세요 :) </p>
+      <p> 선물상자는 해당일 자정에 오픈됩니다 :) </p>
     </div>
 
     <div id="allBox">
@@ -46,12 +46,13 @@
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ nickName1 }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <!-- <img :src="require(`@/assets/${dayLoading.dayImg}`)" alt="image" id='dayImg'> -->
     </div>
+    <img :src="require(`@/assets/11_day_op01.png`)" alt="image" id='dayImg'>
+    <div id="day_text">Day 1</div>
   </div>
 
 <!-- 리지 : 답변 모아보기 view -->
@@ -287,9 +288,9 @@ export default {
             Q_list_page : true,
             Q_gather_page : false,
 
-            nickName : '',
+            nickName1 : 'abcd',
             opened : 1,
-            answerY_N:0,
+            answerY_N:1,
 
 
             start_page : true,
@@ -302,11 +303,11 @@ export default {
             goodbye_finish_page : false,
             changePw_page : false,
             setting_page : false,
-            qna_request_page:false,
+            qna_answer_page:false,
             qna_request:[],
             question_25_content:question_25,
             gift_select:0,
-
+            loading_page : false,
 
             questionList: [
             '한 해 동안 가장 잘했다고 생각되는 결정 3가지',
@@ -524,11 +525,15 @@ export default {
         else if(this.opened==1){
           if(this.answerY_N==0){
             // this.loading_page=true;
-            this.qna_request_page=true;
+            setTimeout(function(){
+              this.qna_answer_page=true;
+              this.loading_page=false;
+            }.bind(this),3000)
+            this.loading_page=true;
             this.Q_list_page=false;
           }
          else if(this.answerY_N==1){
-            this.qna_request_page=true;
+            this.qna_answer_page=true;
            this.Q_list_page=false;
         }
         }
@@ -590,16 +595,32 @@ body {
 }
 
 /* 엘 */
-#Q_list_page #setting {
+#Q_list_page #setting{
   position: absolute;
   width: 24px;
   top: 25px;
   right: 30px;
 }
-.day_img{
+#day_text {
+  font-size: 50px;
+  color: white;
+  margin-top: 30px;
+}
+#dayImg{
   width: 200px;
   height: 200px;
 }
+/* #dayImg-enter{
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+#dayImg-active{
+  transition: opacity 2s ease-in;
+}
+#dayImg-leave-active{
+  transition: opacity 2s ease-out;
+} */
 #ooopsBox_bg {
   /* 배경블러처리 블랙, 화이트 고민 */
   background-color: #00000091;
