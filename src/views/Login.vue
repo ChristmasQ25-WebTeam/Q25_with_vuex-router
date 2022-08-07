@@ -195,7 +195,6 @@
 
   </div>
 
-
 </div>
 </template>
 <script>
@@ -211,8 +210,8 @@ export default {
       pk_find_modal: false,
       no_email_modal: false,
 
-      email: null,
-      password : null,
+      email: '',
+      password : '',
       nickName: '',
       질문데이터: '부여된 랜덤 질문 리스트 데이터',
       ClickButton: false,
@@ -649,11 +648,14 @@ span {vertical-align: baseline;}
 }
 
 .modal_background {
-  width: 360px;
-  height: 640px;
+  width:100%;
+  height: 100%;
   background: rgba(217,217,217,0.7);
-  position: absolute;
-  left: -19px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 .modal_background .modal_box {
   width: 210px;
@@ -661,7 +663,8 @@ span {vertical-align: baseline;}
   background: #F4E7B6;
   border-radius: 10px;
   padding: 16px;
-  margin: 246px 59px;
+  margin: auto;
+  margin-top: 335px;
 }
 .modal_background .modal_box h4 {
   padding: 17px 0 27px 0;

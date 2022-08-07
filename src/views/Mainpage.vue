@@ -26,7 +26,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div> 
+      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -89,7 +89,6 @@
         <span><img src="../assets/07_download.png" id="downloadIcon"></span>
       </div>
   </div>
-
 
 <!-- 자몽: 질문 답변하기 디자인 view -->
 <!--글 발행기능 아직 구현 X => 공부필요-->
@@ -154,7 +153,7 @@
     </div>
     <div class="content">
       <div id="wrap1">
-        <i class="material-icons" @click="togo_setting_page">keyboard_arrow_left</i>
+        <i class="material-icons" @click="togo_Qlist_page">keyboard_arrow_left</i>
       </div>
       <div id="wrap2">
         <h3>Change</h3>
@@ -205,7 +204,7 @@
     </div>
     <div class="content">
       <div id="wrap1">
-        <i class="material-icons" @click="togo_setting_page">keyboard_arrow_left</i>
+        <i class="material-icons" @click="togo_Qlist_page">keyboard_arrow_left</i>
       </div>
       <div id="wrap2">
         <h3>Bye, Bye</h3>
@@ -259,13 +258,15 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
+          <h4 class="logout-btn">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
+          <h4 class="imgcredit-btn">이미지 크레딧 보기</h4>
           <button @click="check">닫기</button>
         </div>
       </div>
     </div>
-  </div> 
+  </div>
 
  </div>
 </template>
@@ -358,6 +359,8 @@ export default {
     togo_Qlist_page(){
       this.Q_list_page=true;
       this.Q_gather_page=false;
+      this.changePw_page = false;
+      this.goodbye_page = false;
     },
     introBtnOn() {
       this.start_page=false;
@@ -394,10 +397,12 @@ export default {
       this.Q_list_page = false;
       this.setting_page = false;
       this.changePw_page = true;
+      this.goodbye_page = false;
     },
     togo_goodbye_page(){
       this.Q_list_page = false;
       this.setting_page = false;
+      this.changePw_page = false;
       this.goodbye_page = true;
     },
     togo_setting_page(){
@@ -427,7 +432,7 @@ export default {
       else if(this.bye_pw == ''){
         this.byepwOpen = true;
       }
-      else if(this.bye_email !== '' && this.bye_pw !== '' && this.bye_repw !== ''){
+      else if(this.bye_email !== '' && this.bye_pw !== '' && this.bye_repw !== '' && this.RePw == true){
         this.goodbye_page = false;
         this.goodbye_finish_page = true;
       }
@@ -972,18 +977,24 @@ span {vertical-align: baseline;}
 }
 
 .modal_background {
-  width: 360px;
-  height: 640px;
+  width:100%;
+  height: 100%;
   background: rgba(217,217,217,0.7);
-  position: absolute;
-  left: -19px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 #setting_page .modal_background {
-  width: 360px;
-  height: 640px;
+  width:100%;
+  height: 100%;
   background: rgba(217,217,217,0.7);
-  position: absolute;
-  left: -180px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 .modal_background .modal_box {
   width: 210px;
@@ -991,15 +1002,36 @@ span {vertical-align: baseline;}
   background: #F4E7B6;
   border-radius: 10px;
   padding: 16px;
-  margin: 246px 59px;
+  /* margin: 246px 59px; */
+  margin: auto;
+  /* margin-top: ; */
 }
 #setting_page .modal_background .modal_box {
   width: 210px;
-  height: 110px;
+  height: 200px;
   background: #F4E7B6;
   border-radius: 10px;
   padding: 16px;
-  margin: 62px 0 0 100px;
+  margin: auto;
+  margin-top: 130px;
+}
+#changePw_page .modal_background .modal_box {
+  width: 210px;
+  height: 100px;
+  background: #F4E7B6;
+  border-radius: 10px;
+  padding: 16px;
+  margin: auto;
+  margin-top:360px;
+}
+#goodbye_page .modal_background .modal_box {
+  width: 210px;
+  height: 100px;
+  background: #F4E7B6;
+  border-radius: 10px;
+  padding: 16px;
+  margin: auto;
+  margin-top:350px;
 }
 .modal_background .modal_box h4 {
   padding: 17px 0 27px 0;
@@ -1022,7 +1054,7 @@ span {vertical-align: baseline;}
   font-weight: 800;
   font-family: 'NanumSquareRound';
 }
-#setting_page .modal_background .modal_box .changepw-btn {
+#setting_page .modal_background .modal_box .logout-btn {
   padding: 4px 0 12px 0;
   border-bottom: 0.3px solid #000;
   font-size: 16px;
