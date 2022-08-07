@@ -1,6 +1,6 @@
 <template>
 <div>
-<!-- 회원별 박스 view -->
+<!-- 엘 : 회원별 박스 view -->
   <div v-if="ooops==true" id="ooopsBox_bg">
     <div id="ooopsBox">
       <div>
@@ -26,7 +26,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div> 
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -37,12 +37,12 @@
       <div v-for="i in 8" :key="i">
         <div @click="open_question" v-for="j in 3" :key="j">
           <!-- <img src="./assets/13_oops.png" alt="" v-if="filled_sticker"> -->
-          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox'>
-          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox'>
+          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
+          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
           {{3*(i-1)+j}}
         </div>
         <div  @click="open_question" v-if='i==8'>
-          <img src="../assets/06_gift25.png" alt="" id="giftbox_25">
+          <img src="../assets/06_gift25.png" alt="" id="giftbox_25" @click="togo_write_answer">
           25
         </div>
       </div>
@@ -60,12 +60,12 @@
     </div>
     <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
   </div>
-<!-- 답변 모아보기 view -->
+<!-- 리지 : 답변 모아보기 view -->
   <div v-if="Q_gather_page==true">
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+          <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
@@ -90,7 +90,7 @@
       </div>
   </div>
 
-<!-- 자몽: 질문 답변하기 디자인 view -->
+<!-- 자몽 : 질문 답변하기 디자인 view -->
 <!--글 발행기능 아직 구현 X => 공부필요-->
   <div v-if="qna_request_page==true">
 
@@ -288,7 +288,7 @@ export default {
 
             nickName : '',
 
-            qna_request_page:true,
+
             start_page : true,
             introduction_page : false,
             pw_find_page : false,
@@ -523,6 +523,10 @@ export default {
     },
     togo_setting_page() {
       this.setting_page=true;
+    },
+    togo_write_answer() {
+      this.qna_request_page=true;
+      this.Q_list_page=false;
     }
 
 

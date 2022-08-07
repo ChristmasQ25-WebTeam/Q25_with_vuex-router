@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from '../router/index.js'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -42,8 +43,39 @@ export default new Vuex.Store({
   },
   actions: {
     // 로그인 시도
-    login({ state, commit }, loginObj) {
-    // 전체 유저에서 해당 이메일로 유저를 찾는다.
+    login({ commit }, loginObj) {
+      axios
+      .post('https://reqres.in/api/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
+      .then(res => {
+        // 성공 시 토큰(실제로는 user_id값을 받아옴)
+        // 토큰을 헤더에 포함시켜서 유저 정보를 요청
+        let token = res.data.token
+        let config = {
+          headers: {
+            'access-token': token
+          }
+        }
+        axios
+        .get('https://reqres.in/api/users/2', config) // header 설정을 위해 config 선언, get 두번째 인자.
+        .then(response => {
+          let userInfo = {
+            id: response.data.data.id,
+            first_name: response.data.data.first_name,
+            last_name: response.data.data.last_name,
+            avatar: response.data.data.avatar,
+            
+            nickName: response.data.data.nickName
+          }
+          commit('loginSuccess',userInfo)
+          router.push({name:'mainpage'})
+        })
+        .catch(() => {
+          commit('loginEmailError')
+        })
+      })
+      .catch(err => {
+        commit('loginEmailError')
+      })
       let selectedUser = null
       state.allUsers.forEach(user => {
         if (user.email === loginObj.email) selectedUser = user

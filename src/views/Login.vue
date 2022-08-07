@@ -1,5 +1,6 @@
 <template>
 <div>
+  <!-- 리지 : 로그인창 view -->
   <div v-if="login_page==true">
     <!-- 로그인 실패 모달창 페이지 -->
       <div class="container">
@@ -19,14 +20,7 @@
               </div>
             </div>
         </div>
-        <!-- <div v-if="isLogin">
-          <div class="modal-black">
-            <div class="modal-yellow">
-              <h4>로그인이 완료되었습니다</h4>
-              <button @click="close">확인</button>
-            </div>
-          </div>
-        </div> -->
+        
         <div id="title">Christmas Q25</div>
         <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
         <div><img id="logo_2" src="../assets/01_wreath.png"></div>
@@ -462,21 +456,22 @@ body {
 }
 
 .modal-black {
-  width: 400px;
-  height: 660px;
+  width: 100%;
+  height: 100%;
   background: rgba(217,217,217,0.7);
   position: fixed;
-  right: 650px;
-  bottom: 50px;
+  top: 0; left: 0; right: 0;
 }
 
 .modal-yellow {
   width: 223px;
   height: 110px;
   background: #F4E7B6;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   padding: 16px;
-  margin: 246px 68px;
 }
 
 .modal-yellow button {
