@@ -83,13 +83,13 @@
         <span><img src="../assets/07_download.png" id="downloadIcon"></span>
       </div>
   </div>
-
-<!-- 자몽 : 질문 답변하기 디자인 view -->
+<!-- 자몽: 질문 답변하기 디자인 view -->
 <!--글 발행기능 아직 구현 X => 공부필요-->
-  <div v-if="qna_request_page==true">
+  <div v-if="qna_answer_page==true">
 
 <div class ="qna_requset_header">
-  <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
+<i class="material-icons" @click="answerToQlist">keyboard_arrow_left</i>
+<span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
 </div>
 
 <div class="qna_request_header_hr">
@@ -420,6 +420,10 @@ export default {
     home_button(){
       this.pw_find_page=false;
       this.login_page=true;
+    },
+    answerToQlist(){
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
     },
 
     random_Q(){
