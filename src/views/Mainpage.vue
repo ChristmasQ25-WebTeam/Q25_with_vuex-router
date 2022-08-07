@@ -27,7 +27,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div> 
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -46,7 +46,7 @@
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div> 
+      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -89,7 +89,6 @@
   <div v-if="qna_request_page==true">
 
 <div class ="qna_requset_header">
- <!-- <i  class="material-icons">keyboard_arrow_left</i>-->
   <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
 </div>
 
@@ -427,7 +426,7 @@ export default {
       console.log(this.nickName)
     },
 
-    
+
     bye_submit(e){
       e.preventDefault();
       // api 받아와서 수정해야함
@@ -513,7 +512,7 @@ export default {
       console.log(event.target.nextSibling)
       // const testqNum = event.target.nextSibling;
       // console.log(question.opened)
-      // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로  
+      // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
       // while(question.qNum==testqNum){
         if(this.opened==0){
           this.ooops=true;
@@ -529,7 +528,7 @@ export default {
            this.Q_list_page=false;
         }
         }
-      
+
       // };
     },
     togo_setting_page() {
@@ -641,7 +640,7 @@ body {
   font-size: 13px;
   font-family: 'NanumSquareRound';
   font-weight: 500;
-} 
+}
 .ooops_line {
   width: 200px;
   height: 0.3px;
@@ -681,7 +680,7 @@ body {
   flex-direction: column;
   margin-bottom: 25px;
   /* padding: 0px 60px 20px 60px; */
-  
+
   /* background-color: #920000; */
 }
 .title > #title_line {
@@ -733,7 +732,7 @@ body {
   height: 73px;
   margin: 16px 0 5px 0;
   line-height: 100px;
-  
+
 }
 #giftbox_25{
   width: 100px;
