@@ -20,7 +20,7 @@
               </div>
             </div>
         </div>
-        
+
         <div id="title">Christmas Q25</div>
         <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
         <div><img id="logo_2" src="../assets/01_wreath.png"></div>
@@ -50,27 +50,27 @@
 <!-- 자몽 : 비번찾기 view -->
   <div v-if="pw_find_page == true">
 
-    <!--모달창(임시비밀번호)-->
-    <!--<div class="modal_bg" v-if="pk_find_modal == true">
+<!--이메일이 있는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmail">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
           <span class="jm_modal_title">발송하였습니다</span>
           <span class="mail">메일함을 확인해주세요</span>
           <hr />
-          <span @click="pk_find_modal = false" class="ok">확인</span>
+          <span @click="close" class="ok">확인</span>
         </div>
       </div>
-    </div>-->
+    </div>
 
-    <!--이메일 없는 경우 모달창 ) API작업후 추가-->
-    <div class="modal_bg" v-if="no_email_modal == true">
+    <!--이메일 없는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmailError">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
           <span class="jm_modal_title">이메일입니다</span>
           <hr>
-        <span @click="no_email_modal= false" class="ok">확인</span>
+        <span @click="close" class="ok">확인</span>
         </div>
       </div>
       </div>
@@ -78,8 +78,7 @@
     <!--임시 비밀번호 발송 메인창-->
 
     <header class="home_icon">
-      <!--<i @click="home_button" class="material-icons">keyboard_arrow_left</i>-->
-      <!-- <img @click="home_button" alt="Vue logo" src="./assets/left-arrow.png" /> -->
+      <i class="material-icons" @click="pwToHomeBtn">keyboard_arrow_left</i>
       <span class="back">홈으로</span>
     </header>
 
@@ -103,8 +102,9 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="no_email_modal = true">완료</button>
+      <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
+
 
 <!-- 미니 : 회원가입 view-->
   <div v-if="signUp_page==true" id="signUp_page">
@@ -219,7 +219,7 @@ export default {
       emailOpen: false,
       pwformOpen: false,
       emailformOpen: false
-     
+
     }
   },
   computed: {
@@ -241,6 +241,11 @@ export default {
       this.start_page=false;
       this.login_page=true;
       this.signUp_page = false;
+    },
+
+    pwtohomebtn(){
+      this.pw_find_page = false;
+      this.login_page=true;
     },
 
     submit (e) {
@@ -309,7 +314,14 @@ export default {
     pwBtnOn(){
       this.login_page=false;
       this.pw_find_page=true;
+    },
+
+    pwToHomeBtn(){
+      this.login_page=true;
+      this.pw_find_page=false;
     }
+
+
   }
 }
 </script>
