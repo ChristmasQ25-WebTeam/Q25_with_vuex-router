@@ -98,10 +98,10 @@ export default new Vuex.Store({
               // axios.get('http://localhost:3000/members/question').then((response) => settodo(response.data))
               // return console.log('success')
               
-            }
-    },
+            },
     close({ state, commit }) {
-      commit('closeit')
+              commit('closeit')
+    }
     }
   }
 )
