@@ -87,7 +87,6 @@ export default new Vuex.Store({
       //       else{
       //         commit('loginSuccess', selectedUser)
       //         router.push({name:'mainpage'})
-              
               // qlist페이지(mainpage)로 넘어갈 때 api받아오는 코드 구현 중 -엘 
               // axios.get('http://localhost:3000/members/question').then((response) => settodo(response.data))
               // return console.log('success')
@@ -97,7 +96,5 @@ export default new Vuex.Store({
     close({ state, commit }) {
       commit('closeit')
     }
-  },
-  modules: {
   }
 })
