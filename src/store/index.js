@@ -103,7 +103,5 @@ export default new Vuex.Store({
     close({ state, commit }) {
       commit('closeit')
     }
-  },
-  modules: {
   }
-})
+)
