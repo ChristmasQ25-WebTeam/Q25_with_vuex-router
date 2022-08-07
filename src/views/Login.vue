@@ -236,6 +236,12 @@ export default {
       this.signUp_page=false;
     },
 
+    togo_login_page(){
+      this.start_page=false;
+      this.login_page=true;
+      this.signUp_page = false;
+    },
+
     submit (e) {
       e.preventDefault();
       if (this.nickName == ''){
