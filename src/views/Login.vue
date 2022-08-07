@@ -457,7 +457,7 @@ body {
 .modal-black {
   width: 100%;
   height: 100%;
-  background: rgba(217,217,217,0.7);
+  background: #00000091;
   position: fixed;
   top: 0; left: 0; right: 0;
 }
