@@ -50,7 +50,8 @@
 <!-- 자몽 : 비번찾기 view -->
   <div v-if="pw_find_page == true">
 
-    <div class="modal_bg" v-if="pk_find_modal == true">
+<!--이메일이 있는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmail">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
@@ -62,8 +63,8 @@
       </div>
     </div>
 
-    <!--이메일 없는 경우 모달창 ) API작업후 추가-->
-    <div class="modal_bg" v-if="isEmailError==ture">
+    <!--이메일 없는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmailError">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
@@ -77,7 +78,7 @@
     <!--임시 비밀번호 발송 메인창-->
 
     <header class="home_icon">
-      <i class="material-icons" @click="pwtohomebtn" >keyboard_arrow_left</i>
+      <i class="material-icons" @click="pwToHomeBtn">keyboard_arrow_left</i>
       <span class="back">홈으로</span>
     </header>
 
@@ -103,6 +104,7 @@
 
       <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
+
 
 <!-- 미니 : 회원가입 view-->
   <div v-if="signUp_page==true" id="signUp_page">
@@ -312,7 +314,14 @@ export default {
     pwBtnOn(){
       this.login_page=false;
       this.pw_find_page=true;
+    },
+
+    pwToHomeBtn(){
+      this.login_page=true;
+      this.pw_find_page=false;
     }
+
+
   }
 }
 </script>
