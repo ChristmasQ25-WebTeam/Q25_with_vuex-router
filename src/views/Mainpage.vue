@@ -979,7 +979,7 @@ span {vertical-align: baseline;}
 .modal_background {
   width:100%;
   height: 100%;
-  background: rgba(217,217,217,0.7);
+  background: #00000091;
   position: fixed;
   top: 0;
   left: 0;
@@ -989,7 +989,7 @@ span {vertical-align: baseline;}
 #setting_page .modal_background {
   width:100%;
   height: 100%;
-  background: rgba(217,217,217,0.7);
+  background: #00000091;
   position: fixed;
   top: 0;
   left: 0;
