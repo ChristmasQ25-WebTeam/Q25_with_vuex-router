@@ -119,7 +119,7 @@
 import { mapState, mapActions } from 'vuex'
 export default {
   data() {
-    return {
+    return  {
       email: null,
       password : null,
       login_page: true,
