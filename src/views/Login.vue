@@ -56,27 +56,27 @@
 <!-- 자몽 : 비번찾기 view -->
   <div v-if="pw_find_page == true">
 
-    <!--모달창(임시비밀번호)-->
-    <!--<div class="modal_bg" v-if="pk_find_modal == true">
+<!--이메일이 있는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmail">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
           <span class="jm_modal_title">발송하였습니다</span>
           <span class="mail">메일함을 확인해주세요</span>
           <hr />
-          <span @click="pk_find_modal = false" class="ok">확인</span>
+          <span @click="close" class="ok">확인</span>
         </div>
       </div>
-    </div>-->
+    </div>
 
-    <!--이메일 없는 경우 모달창 ) API작업후 추가-->
-    <div class="modal_bg" v-if="no_email_modal == true">
+    <!--이메일 없는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmailError">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
           <span class="jm_modal_title">이메일입니다</span>
           <hr>
-        <span @click="no_email_modal= false" class="ok">확인</span>
+        <span @click="close" class="ok">확인</span>
         </div>
       </div>
       </div>
@@ -84,8 +84,7 @@
     <!--임시 비밀번호 발송 메인창-->
 
     <header class="home_icon">
-      <!--<i @click="home_button" class="material-icons">keyboard_arrow_left</i>-->
-      <!-- <img @click="home_button" alt="Vue logo" src="./assets/left-arrow.png" /> -->
+      <i class="material-icons" @click="pwToHomeBtn">keyboard_arrow_left</i>
       <span class="back">홈으로</span>
     </header>
 
@@ -109,7 +108,7 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="no_email_modal = true">완료</button>
+      <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
 
 
@@ -128,6 +127,23 @@ export default {
       pw_find_page: false,
       pk_find_modal: false,
       no_email_modal: false,
+
+      email: null,
+      password : null,
+      nickName: '',
+      질문데이터: '부여된 랜덤 질문 리스트 데이터',
+      ClickButton: false,
+      nickOpen: false,
+      pwOpen: false,
+      chkPw: true,
+      chkNum: /[0-9]/,
+      chkEng: /[a-zA-Z]/,
+      chkEmailForm: /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      chkEmail: false,
+      emailOpen: false,
+      pwformOpen: false,
+      emailformOpen: false
+
     }
   },
   computed: {
@@ -146,6 +162,12 @@ export default {
     },
 
     submit(e){
+    pwToHomeBtn(){
+      this.pw_find_page=false;
+      this.login_page=true;
+    },
+
+    submit (e) {
       e.preventDefault();
       if (this.nickName == ''){
         this.nickOpen = true;

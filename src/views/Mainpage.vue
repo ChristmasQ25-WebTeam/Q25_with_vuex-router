@@ -1,5 +1,66 @@
 <template>
 <div>
+
+<!-- 회원별 박스 view -->
+  <div v-if="ooops==true" id="ooopsBox_bg">
+    <div id="ooopsBox">
+      <div>
+        <div>Ooops!</div>
+        <div>
+          <div class="ooops_line"></div>
+          <div>
+            아직 질문이 오픈되지 않았어요!
+            <br>
+            질문은 해당일 자정에 오픈됩니다.
+            <br>
+            조금만 기다려주세요:)
+          </div>
+          <div>
+            <img src="@/assets/03_gift_opened_sticker.png" alt="">
+          </div>
+          <div class="ooops_line"></div>
+        </div>
+        <button @click="ooops=false">확인</button>
+      </div>
+    </div>
+  </div>
+  <div v-if="Q_list_page==true" id="Q_list_page">
+    <div class="title">
+      <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
+      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div>Christmas Q25</div>
+      <div id="title_line"></div>
+      <p>당신의 1년을 정리하는 25개의 질문</p>
+      <p> 선물상자는 1번부터 열어주세요 :) </p>
+    </div>
+    <div class="newcontents">
+      <!-- 반복문활용 -->
+      <div v-for="i in 8" :key="i">
+        <div @click="open_question" v-for="j in 3" :key="j">
+          <!-- <img src="./assets/13_oops.png" alt="" v-if="filled_sticker"> -->
+          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox'  @click="togo_write_answer">
+          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox' @click="togo_write_answer">
+          {{3*(i-1)+j}}
+        </div>
+        <div  @click="open_question" v-if='i==8'>
+          <img src="../assets/06_gift25.png" alt="" id="giftbox_25" @click="togo_write_answer">
+          25
+        </div>
+      </div>
+
+      <!-- 그냥 나열 -->
+      <!-- <div>
+        <div id="box_1">
+          <img src="" alt="">
+          1
+        </div>
+        <div></div>
+        <div></div>
+      </div> -->
+
+    </div>
+    <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
+  </div>
 <!-- 답변 모아보기 view -->
   <div v-if="Q_gather_page==true">
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
@@ -32,11 +93,11 @@
 
 <!-- 자몽: 질문 답변하기 디자인 view -->
 <!--글 발행기능 아직 구현 X => 공부필요-->
-  <div v-if="qna_request_page==true">
+  <div v-if="qna_answer_page==true">
 
 <div class ="qna_requset_header">
- <!-- <i  class="material-icons">keyboard_arrow_left</i>-->
-  <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
+<i class="material-icons" @click="answerToQlist">keyboard_arrow_left</i>
+<span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
 </div>
 
 <div class="qna_request_header_hr">
@@ -69,6 +130,143 @@
 </div>
   </div>
 
+  <!-- 미니 : 비번변경 view -->
+  <div v-if="changePw_page==true" id="changePw_page">
+    <div class="modal">
+      <div class="modal_background" v-if="newpwOpen == true">
+        <div class="modal_box">
+          <h4>비밀번호 형식을 확인해주세요</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <div class="modal_background check-oldpw" v-if="oldpwOpen == true">
+        <div class="modal_box">
+          <h4>기존 비밀번호가<br>일치하지 않습니다</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <div class="modal_background" v-if="changepwOpen == true">
+        <div class="modal_box">
+          <h4>비밀번호가 변경되었습니다</h4>
+          <button @click="togo_Qlist_page">확인</button>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div id="wrap1">
+        <i class="material-icons" @click="togo_setting_page">keyboard_arrow_left</i>
+      </div>
+      <div id="wrap2">
+        <h3>Change</h3>
+        <img id="changePw_img" src="../assets/04_key.png" alt="비번변경">
+        <ul>
+          <li>
+            <div class="label-box">
+              <span>기존의 비밀번호를 입력해주세요!</span>
+            </div>
+            <div class="input-box">
+              <input type="password" class="inputText" v-model="old_pw" placeholder="기존 비밀번호를 입력해주세요!">
+            </div>
+          </li>
+          <li>
+            <div class="label-box">
+              <span>새 비밀번호를 입력해주세요!</span>
+            </div>
+            <div class="input-box newPw-input">
+              <input type="password" class="inputText" v-model="new_pw" placeholder="새 비밀번호를 입력해주세요!" @change="chkInput_new">
+              <p :class="[chknewPw === false ? 'unchk' : 'chk']">*영문/숫자 포함 6자 이상</p>
+            </div>
+          </li>
+        </ul>
+        <p>confirm</p>
+        <img id="stamp_img" src="../assets/02_stamp.png" alt="스탬프">
+      </div>
+      <div id="wrap3">
+        <button class="finish-btn" @click="changepw_submit">완료</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 미니 : 회원탈퇴 view -->
+  <div v-if="goodbye_page==true" id="goodbye_page">
+    <div class="modal">
+      <div class="modal_background" v-if="byeemailOpen == true">
+        <div class="modal_box">
+          <h4>이메일이 일치하지 않습니다</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+      <div class="modal_background" v-if="byepwOpen == true">
+        <div class="modal_box">
+          <h4>잘못된 비밀번호입니다</h4>
+          <button @click="check">확인</button>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div id="wrap1">
+        <i class="material-icons" @click="togo_setting_page">keyboard_arrow_left</i>
+      </div>
+      <div id="wrap2">
+        <h3>Bye, Bye</h3>
+        <img id="goodbye_img" src="../assets/10_goodbye.png" alt="회원탈퇴">
+        <ul>
+          <li>
+            <div class="label-box">
+              <span>이메일을 입력해주세요!</span>
+            </div>
+            <div class="input-box">
+              <input type="email" class="inputText" v-model="bye_email" placeholder="이메일을 입력해주세요!">
+            </div>
+          </li>
+          <li>
+            <div class="label-box">
+              <span>비밀번호를 입력해주세요!</span>
+            </div>
+            <div class="input-box">
+              <input type="password" class="inputText" v-model="bye_pw" placeholder="비밀번호를 입력해주세요!">
+            </div>
+          </li>
+          <li>
+            <div class="label-box">
+              <span>비밀번호를 다시 한 번 입력해주세요!</span>
+            </div>
+            <div class="input-box repw-input">
+              <input type="password" class="inputText" v-model="bye_repw" placeholder="비밀번호를 입력해주세요!" @change="chkRePw">
+              <img src="../assets/05_check.png" alt="중복확인" v-if="RePw == true">
+            </div>
+          </li>
+        </ul>
+        <p>confirm</p>
+        <img id="stamp_img" src="../assets/02_stamp.png" alt="스탬프">
+      </div>
+      <div id="wrap3">
+        <button class="finish-btn" @click="bye_submit">완료</button>
+      </div>
+    </div>
+  </div>
+  <div v-if="goodbye_finish_page==true" id="goodbye_finish_page">
+    <div class="title">Christmas Q25</div>
+    <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
+    <img src="../assets/01_wreath.png">
+    <span>탈퇴가 완료되었습니다<br>이용해주셔서 감사했어요 :)<br>행복한 연말 보내세요!</span>
+    <button class="togo_home" @click="togo_home">홈으로</button>
+    <div class="teamname">teamname</div>
+  </div>
+
+  <!-- 미니 : 설정 view -->
+  <div v-if="setting_page==true" id="setting_page">
+    <div class="modal">
+      <div class="modal_background">
+        <div class="modal_box">
+          <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
+          <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
+          <button @click="check">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+>>>>>>> Stashed changes
 
  </div>
 </template>
@@ -86,6 +284,21 @@ export default {
             Q_list_page : false,
             Q_gather_page : false,
             qna_request_page:true,
+
+            nickName : '',
+
+
+            start_page : true,
+            introduction_page : false,
+            pw_find_page : false,
+            signUp_page : false,
+            complete_page : false,
+            login_page : false,
+            goodbye_page : false,
+            goodbye_finish_page : false,
+            changePw_page : false,
+            setting_page : false,
+            qna_answer_page:false,
             qna_request:[],
             question_25_content:question_25,
             gift_select:0,
@@ -117,6 +330,175 @@ export default {
     togo_Qlist_page(){
       this.Q_list_page=true;
       this.Q_gather_page=false;
+
+    },
+    introBtnOn() {
+      this.start_page=false;
+      this.introduction_page=true;
+    },
+    introBtnOff(){
+      this.start_page=true;
+      this.introduction_page=false;
+    },
+    signUpBtnOn(){
+      this.login_page=false;
+      this.signUp_page=true;
+    },
+    // 닫기버튼이 아직 없어서 적용못함
+    signUpBtnOff(){
+      this.signUp_page=false;
+    },
+    pwBtnOn(){
+      this.login_page=false;
+      this.pw_find_page=true;
+      this.Q_list_page = false;
+    },
+    togo_login_page(){
+      this.start_page=false;
+      this.login_page=true;
+      this.signUp_page = false;
+    },
+    togo_home(){
+      this.goodbye_finish_page = false;
+      this.start_page = true;
+      this.pw_find_page = false;
+    },
+    togo_changePw_page(){
+      this.Q_list_page = false;
+      this.setting_page = false;
+      this.changePw_page = true;
+    },
+    togo_goodbye_page(){
+      this.Q_list_page = false;
+      this.setting_page = false;
+      this.goodbye_page = true;
+    },
+    togo_setting_page(){
+      this.Q_list_page = true;
+      this.setting_page = true;
+      this.changePw_page = false;
+      this.goodbye_page = false;
+    },
+
+    home_button(){
+      this.pw_find_page=false;
+      this.login_page=true;
+    },
+
+    random_Q(){
+      console.log(this.nickName)
+    },
+
+    answerToQlist(){
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
+    },
+
+    bye_submit(e){
+      e.preventDefault();
+      // api 받아와서 수정해야함
+      if(this.bye_email == ''){
+        this.byeemailOpen = true;
+        this.byepwOpen = false;
+      }
+      else if(this.bye_pw == ''){
+        this.byepwOpen = true;
+      }
+      else if(this.bye_email !== '' && this.bye_pw !== '' && this.bye_repw !== ''){
+        this.goodbye_page = false;
+        this.goodbye_finish_page = true;
+      }
+    },
+    changepw_submit(e){
+      e.preventDefault();
+      if(this.chknewPw == false){
+        this.newpwOpen = true;
+        this.oldpwOpen = false;
+        this.changepwOpen = false;
+      }
+      // api 받아와서 수정해야함
+      else if(this.old_pw == ''){
+        this.oldpwOpen = true;
+        this.changepwOpen = false;
+      }
+      else if(this.chknewPw == true && this.old_pw !== ''){
+        this.changepwOpen = true;
+      }
+    },
+    check(){
+      this.nickOpen = false;
+      this.pwOpen = false;
+      this.emailOpen = false;
+      this.pwformOpen = false;
+      this.emailformOpen = false;
+      this.byeemailOpen = false;
+      this.byepwOpen = false;
+      this.oldpwOpen = false;
+      this.newpwOpen = false;
+      this.setting_page = false;
+    },
+    chkInput(){
+      if (this.password.length < 6){
+        this.chkPw = false;
+      }
+      if(!this.chkNum.test(this.password)){
+        this.chkPw = false;
+      }
+      if(!this.chkEng.test(this.password)){
+        this.chkPw = false;
+      }
+      if(this.password.length > 5 && this.chkNum.test(this.password) && this.chkEng.test(this.password))
+        this.chkPw = true;
+    },
+    chkInput_new(){
+      if (this.new_pw.length < 6){
+        this.chknewPw = false;
+      }
+      if(!this.chkNum.test(this.new_pw)){
+        this.chknewPw = false;
+      }
+      if(!this.chkEng.test(this.new_pw)){
+        this.chknewPw = false;
+      }
+      if(this.new_pw.length > 5 && this.chkNum.test(this.new_pw) && this.chkEng.test(this.new_pw))
+        this.chknewPw = true;
+    },
+    chkOverlap(){
+      this.chkEmail = true;
+    },
+    chkRePw(){
+      if(this.bye_pw == this.bye_repw){
+        this.RePw = true;
+      }
+      else{
+        this.RePw = false;
+      }
+    },
+
+    open_question(event) {
+      console.log(event.target.data);
+      // if(this.answer==1){
+      //   this.ooops=true;
+      // }
+      // else if(this.answer==null){
+      //   this.Q_list_page=false;
+      //   this.motion_page=true;
+
+      // }
+
+      // var numBer = event.path[0].nextSibling;
+      // if(this.answer!=null){
+      //   console.log(this.ooops = true)
+        // console.log(this.$refs.getNum[index.index].innerText);
+
+      // }
+    },
+    togo_setting_page() {
+      this.setting_page=true;
+    },
+    togo_write_answer() {
+      this.qna_answer_page=true;
+      this.Q_list_page=false;
     }
 
 
@@ -165,6 +547,179 @@ body {
   justify-content: center;
 }
 
+
+/* 엘 */
+#Q_list_page #setting {
+  position: absolute;
+  width: 24px;
+  top: 25px;
+  right: 30px;
+}
+.day_img{
+  width: 200px;
+  height: 200px;
+}
+#ooopsBox_bg {
+  /* 배경블러처리 블랙, 화이트 고민 */
+  background-color: #00000091;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  /* position: relative; */
+}
+#ooopsBox {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* background-color: khaki; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#ooopsBox > div {
+  width: 224px;
+  height: 250px;
+  background-color: #F4E7B6;
+  /* position: fixed; */
+  position: absolute;
+  border-radius: 6px;
+  padding: 20px;
+
+}
+#ooopsBox > div > div:nth-child(1) {
+  font-size: 21px;
+  font-family: 'Sorts Mill Goudy', serif;
+  font-weight: 700;
+}
+#ooopsBox > div > div > div:nth-child(3) >img {
+  width: 70px;
+  margin-top: 10px;
+}
+#ooopsBox > div > div > div:nth-child(2) {
+  font-size: 13px;
+  font-family: 'NanumSquareRound';
+  font-weight: 500;
+}
+.ooops_line {
+  width: 200px;
+  height: 0.3px;
+  background-color: rgba(0, 0, 0, 0.548);
+  margin: 13px;
+}
+#ooopsBox > div > button {
+  width: 70px;
+  height: 30px;
+  color:  #F4E7B6;
+  background-color: #920000;
+  border: none;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 500;
+  /* margin-top: 10px; */
+  cursor: pointer;
+}
+#Q_list_page {
+  overflow: scroll;
+  /* position: relative; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.title {
+  font-family: 'Sorts Mill Goudy', serif;
+  color: #FFF500;
+  font-size: 30px;
+  font-weight: 600;
+  /* position: fixed; */
+  top: 80px;
+  /* position: absolute; */
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+  /* padding: 0px 60px 20px 60px; */
+
+  /* background-color: #920000; */
+}
+.title > #title_line {
+  height: 1px;
+  width: 330px;
+  background-color: rgba(255, 255, 255, 0.646);
+  border-radius: 1px;
+  margin: 34px 0 30px 0;
+
+}
+.title > p {
+  font-family: 'NanumSquareRound';
+  color: white;
+  font-size: 16px;
+  font-weight: normal;
+}
+.title > p:nth-child(5){
+  color: rgba(255, 255, 255, 0.742);
+  font-size: 13px;
+  margin-top: 5px;
+}
+.newcontents {
+  height: 400px;
+  width: 350px;
+  display: flex;
+  /* position: sticky; */
+  overflow: scroll;
+  flex-direction: column;
+  align-items: center;
+  /* margin-top: 30px; */
+  /* padding-top: 175px; */
+  background-color: #9b1010;
+  border-radius: 10px;
+  padding-bottom: 20px;
+
+}
+.newcontents > p {
+  font-family: 'NanumSquareRound';
+  color: white;
+}
+.newcontents > div {
+  font-family: 'OFL Sorts Mill Goudy TT';
+  font-size: 21px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.newcontents > div > div {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  cursor: pointer;
+  margin: 0 16px;
+}
+#giftbox {
+  width: 73px;
+  height: 73px;
+  margin: 16px 0 5px 0;
+  line-height: 100px;
+
+}
+#giftbox_25{
+  width: 100px;
+  height: 100px;
+  margin-top: 36px;
+}
+#answer_group {
+  width: 120px;
+  height: 40px;
+  margin: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  color: rgb(16, 16, 16);
+}
 /* 리지 */
 .container {
     display: flex;

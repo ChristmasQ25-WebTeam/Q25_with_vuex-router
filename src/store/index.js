@@ -13,9 +13,17 @@ export default new Vuex.Store({
     ],
     isLogin: false,
     isEmailError: false,
-    isPwError: false
+    isPwError: false,
+
   },
   mutations: {
+    EmailSuccess(state){
+      state.isLogin = false
+      state.isEmailError = false
+      state.isPwError = false
+    },
+
+
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
@@ -28,17 +36,21 @@ export default new Vuex.Store({
       state.isLogin = false
       state.isEmailError = true
       state.isPwError = false
+
     },
     // 비번 실패했을 때,
     loginPwError(state) {
       state.isLogin = false
       state.isEmailError = false
       state.isPwError = true
+
     },
     closeit(state) {
       state.isEmailError = false
       state.isPwError = false
+
     }
+
   },
   actions: {
     // 로그인 시도
@@ -52,7 +64,7 @@ export default new Vuex.Store({
         commit('loginEmailError')
           else if (selectedUser.password !== loginObj.password)
              commit('loginPwError')
-            else{
+          else{
               commit('loginSuccess', selectedUser)
               router.push({name:'mainpage'})
             }
