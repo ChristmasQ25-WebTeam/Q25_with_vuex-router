@@ -20,7 +20,6 @@
               </div>
             </div>
         </div>
-
         <div id="title">Christmas Q25</div>
         <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
         <div><img id="logo_2" src="../assets/01_wreath.png"></div>

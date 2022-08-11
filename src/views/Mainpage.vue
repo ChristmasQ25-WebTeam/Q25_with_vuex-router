@@ -27,7 +27,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.last_name }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -40,7 +40,7 @@
         {{i+1}}
       </div>
     </div>
-    <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
+    <button id="answer_group" @click="[togo_answerGrouping_page(), getQuestions()]">답변 모아보기</button>
   </div>
 
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
@@ -59,19 +59,19 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+          <div><span class="userName">{{ userInfo.last_name }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div v-for="(question,i) in questionList" :key="question">
-        <div class="questionBox">
+      <div v-for="(id,i) in users" :key="id">
+        <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
             <span id="Q_inquestion">Q{{i+1}}. &nbsp;</span>
-            <span>{{question}}</span><br>
+            <span>{{id}}</span><br>
             <span id="Q_inquestion">A. &nbsp;</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
@@ -251,7 +251,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn">로그아웃</h4>
+          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn">이미지 크레딧 보기</h4>
@@ -266,9 +266,9 @@
 
 <script>
 /* eslint-disable */
-import question_25 from '../assets/question_25.js';
-import { mapState } from 'vuex'
 import axios from 'axios'
+import question_25 from '../assets/question_25.js';
+import { mapState, mapActions } from 'vuex'
 import data from '../assets/test_data1.js';
 import data2 from '../assets/test_data2.js';
 
@@ -357,6 +357,25 @@ export default {
         }
     },
     methods: {
+    ...mapActions(['getQuestions']),
+
+    getQuestions() {
+      axios
+      .get('https://reqres.in/api/unknown')
+      .then(res => {
+        this.users = res.data.data
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    goto_QnApage() {
+      this.Q_gather_page=false;
+      this.qna_answer_page=true;
+    },
     togo_answerGrouping_page(){
       this.Q_list_page=false;
       this.Q_gather_page=true;
@@ -524,11 +543,11 @@ export default {
         else if(this.opened==1){
           if(this.answerY_N==0){
             // this.loading_page=true;
-            this.qna_request_page=true;
+            this.qna_answer_page=true;
             this.Q_list_page=false;
           }
          else if(this.answerY_N==1){
-            this.qna_request_page=true;
+            this.qna_answer_page=true;
            this.Q_list_page=false;
         }
         }
@@ -825,6 +844,7 @@ body {
   display: inline-block;
   text-align: justify;
   margin: 5px;
+  cursor: pointer;
 }
 
 .questionBox_line {
@@ -928,7 +948,7 @@ display: none;
 
 textarea:focus {outline: none;}
 textarea::placeholder {
-	color: #ccc;
+   color: #ccc;
   padding: 20px 5px;
 }
 
