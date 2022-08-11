@@ -23,6 +23,7 @@ export default new Vuex.Store({
       state.isEmailError = false
       state.isPwError = false
       state.userInfo = payload
+      
     },
     // 이메일 실패했을 때,
     loginEmailError(state) {
@@ -45,28 +46,32 @@ export default new Vuex.Store({
     // 로그인 시도
     login({ commit }, loginObj) {
       axios
-      .post('https://reqres.in/api/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
+      .post('http://localhost:5001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
       .then(res => {
         // 성공 시 토큰(실제로는 user_id값을 받아옴)
         // 토큰을 헤더에 포함시켜서 유저 정보를 요청
-        let token = res.data.token
+        let token = res.data.result;
         let config = {
           headers: {
             'access-token': token
           }
         }
         axios
-        .get('https://reqres.in/api/users/2', config) // header 설정을 위해 config 선언, get 두번째 인자.
-        .then(response => {
+        .get('http://localhost:5001/api/members/login', loginObj) // header 설정을 위해 config 선언, get 두번째 인자.
+        .then(res => {
+          // console.log(res.data)
           let userInfo = {
-            id: response.data.data.id,
-            first_name: response.data.data.first_name,
-            last_name: response.data.data.last_name,
-            avatar: response.data.data.avatar,
-            
-            nickName: response.data.data.nickName
+            userIdx : res.data.result.userIdx
           }
+          console.log(res.data)
           commit('loginSuccess',userInfo)
+          // 엘 -> 로그인 성공 후 메인페이지(질문리스트)에서 불러올 데이터
+          axios.get('http://localhost:5001/api/members/question', config)
+          .then(res => {
+            console.log(res)
+          }) 
+
+
           router.push({name:'mainpage'})
         })
         .catch(() => {
@@ -76,20 +81,7 @@ export default new Vuex.Store({
       .catch(err => {
         commit('loginEmailError')
       })
-      // let selectedUser = null
-      // state.allUsers.forEach(user => {
-      //   if (user.email === loginObj.email) selectedUser = user
-      // })
-      // if (selectedUser === null)
-      //   commit('loginEmailError')
-      //     else if (selectedUser.password !== loginObj.password)
-      //        commit('loginPwError')
-      //       else{
-      //         commit('loginSuccess', selectedUser)
-      //         router.push({name:'mainpage'})
-              // qlist페이지(mainpage)로 넘어갈 때 api받아오는 코드 구현 중 -엘 
-              // axios.get('http://localhost:3000/members/question').then((response) => settodo(response.data))
-              // return console.log('success')
+      
               },
     close({ state, commit }) {
               commit('closeit')

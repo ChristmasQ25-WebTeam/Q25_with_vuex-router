@@ -20,10 +20,10 @@
           </div>
           <div class="ooops_line"></div>
         </div>
-        <button @click="ooops=false">확인</button>
+        <button @click="ooops_close">확인</button>
       </div>
     </div>
-  </div>
+  </div> 
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
@@ -51,8 +51,11 @@
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
     </div>
-    <img :src="require(`@/assets/11_day_op01.png`)" alt="image" id='dayImg'>
-    <div id="day_text">Day 1</div>
+    <transition appear name="fade">
+        <img v-for='day in day이미지' :key="day" :src="require(`@/assets/${day.dayimg}`)" alt="image" id='dayImg'/>
+    </transition>
+    
+    <div id="day_text">Day {{dayNum}} </div>
   </div>
 
 <!-- 리지 : 답변 모아보기 view -->
@@ -271,7 +274,8 @@ import question_25 from '../assets/question_25.js';
 import { mapState } from 'vuex'
 import axios from 'axios'
 import data from '../assets/test_data1.js';
-import data2 from '../assets/test_data2.js';
+import data2 from '../assets/test_data2(dayimg).js';
+console.log(data2)
 
 export default {
     // data : () => ({
@@ -290,7 +294,8 @@ export default {
 
             nickName1 : 'abcd',
             opened : 1,
-            answerY_N:1,
+            answerY_N:0,
+            dayNum : 0,
 
 
             start_page : true,
@@ -514,7 +519,7 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target.nextSibling)
+      // console.log(event.target.nextSibling)
       // const testqNum = event.target.nextSibling;
       // console.log(question.opened)
       // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
@@ -523,12 +528,14 @@ export default {
           this.ooops=true;
         }
         else if(this.opened==1){
+          this.dayNum = event.target.nextSibling;
+          console.log(this.dayNum);
           if(this.answerY_N==0){
             // this.loading_page=true;
             setTimeout(function(){
               this.qna_answer_page=true;
               this.loading_page=false;
-            }.bind(this),3000)
+            }.bind(this),2000)
             this.loading_page=true;
             this.Q_list_page=false;
           }
@@ -546,8 +553,15 @@ export default {
     togo_write_answer() {
       this.qna_request_page=true;
       this.Q_list_page=false;
+    },
+    ooops_close(){
+      this.ooops=false;
+      this.Q_list_page=true;
+    },
+    submit() {
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
     }
-
 
     }
 }
@@ -595,6 +609,12 @@ body {
 }
 
 /* 엘 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 #Q_list_page #setting{
   position: absolute;
   width: 24px;
