@@ -4,22 +4,16 @@
   <div v-if="login_page==true">
     <!-- 로그인 실패 모달창 페이지 -->
       <div class="container">
-        <div v-if="isEmailError">
+        <div v-if="isError">
             <div class="modal-black">
               <div class="modal-yellow">
-                <h4>등록되지 않은 이메일입니다</h4>
+                <h4>이메일 또는 비밀번호를
+                  <br>확인해주세요</h4>
                 <button @click="close">확인</button>
               </div>
             </div>
         </div>
-        <div v-if="isPwError">
-            <div class="modal-black">
-              <div class="modal-yellow">
-                <h4>잘못된 비밀번호입니다</h4>
-                <button @click="close">확인</button>
-              </div>
-            </div>
-        </div>
+
         <div id="title">Christmas Q25</div>
         <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
         <div><img id="logo_2" src="../assets/01_wreath.png"></div>
@@ -222,7 +216,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isEmailError', 'isPwError'])
+    ...mapState(['isLogin', 'isError'])
   },
   methods: {
     ...mapActions(['login','close']),
@@ -476,7 +470,7 @@ body {
 
 .modal-yellow {
   width: 223px;
-  height: 110px;
+  height: 120px;
   background: #F4E7B6;
   position: absolute;
   top: 50%; left: 50%;
@@ -497,7 +491,7 @@ body {
 }
 
 .modal-yellow h4 {
-  padding: 20px 0 30px 0;
+  padding: 20px 0 20px 0;
   border-bottom: 0.3px solid #000;
   font-size: 16px;
   font-weight: 800;

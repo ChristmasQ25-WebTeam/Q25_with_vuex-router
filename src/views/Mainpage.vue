@@ -66,7 +66,7 @@
       </div>
 
     <div id="contentsBox">
-      <div v-for="(question,i) in questions" :key="i">
+      <div v-for="(qCollectionInfo,i) in questions" :key="i">
         <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">

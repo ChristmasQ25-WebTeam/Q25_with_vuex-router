@@ -9,41 +9,32 @@ export default new Vuex.Store({
   state: {
     userInfo: null,
     isLogin: false,
-    isEmailError: false,
-    isPwError: false
+    isError: false,
   },
   mutations: {
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
-      state.isEmailError = false
-      state.isPwError = false
+      state.isError = false
       state.userInfo = payload
     },
-    // 이메일 실패했을 때,
-    loginEmailError(state) {
+    // 이메일 또는 비번 실패했을 때,
+    loginError(state) {
       state.isLogin = false
-      state.isEmailError = true
-      state.isPwError = false
-    },
-    // 비번 실패했을 때,
-    loginPwError(state) {
-      state.isLogin = false
-      state.isEmailError = false
-      state.isPwError = true
+      state.isError = true
     },
     // 모달창 닫기
     closeit(state) {
-      state.isEmailError = false
-      state.isPwError = false
+      state.isError = false
     },
     // 로그아웃
     logout(state) {
       state.isLogin = false
-      state.isEmailError = false
-      state.isPwError = false
+      state.isError = false
       state.userInfo = null
       state.token = '';
+      axios
+      .delete('http://localhost:3001/api/members/logout')
     }
   },
   actions: {
@@ -79,12 +70,12 @@ export default new Vuex.Store({
         })
         .catch(err => {
           console.log(err)
-          commit('loginEmailError')
+          commit('loginError')
         })
       })
       .catch(err => {
         console.log(err)
-        commit('loginEmailError')
+        commit('loginError')
       })
     },
     close({ state, commit }) {
