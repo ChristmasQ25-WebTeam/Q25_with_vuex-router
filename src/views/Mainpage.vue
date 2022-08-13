@@ -46,7 +46,7 @@
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -59,20 +59,21 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.last_name }}</span>'s</div>
+          <div><span class="userName">{{ qCollectionInfo.nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div v-for="(id,i) in users" :key="id">
+      <div v-for="(question,i) in questions" :key="i">
         <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{i+1}}. &nbsp;</span>
-            <span>{{id}}</span><br>
+            <span id="Q_inquestion">Q{{qCollectionInfo.qNum}}. &nbsp;</span>
+            <span>{{qCollectionInfo.qnacontent}}</span><br>
             <span id="Q_inquestion">A. &nbsp;</span>
+            <span>{{qCollectionInfo.answer}}</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
@@ -357,13 +358,19 @@ export default {
         }
     },
     methods: {
-    ...mapActions(['getQuestions']),
-
     getQuestions() {
       axios
-      .get('https://reqres.in/api/unknown')
+      .get('http://localhost:3001/api/members/question/collection')
       .then(res => {
-        this.users = res.data.data
+         let qCollectionInfo = {
+          qnaData: res.data.result,
+          nickName: res.data.result.nickName,
+          questions: res.data.result.question,
+          qNum: res.data.result.question.qNum,
+          qnacontent: res.data.result.question.qnacontent,
+          answer: res.data.result.question.answer
+        }
+        
         console.log(res);
       })
       .catch(err => {

@@ -56,31 +56,34 @@ export default new Vuex.Store({
       .then(res => {
         // 성공 시 토큰(실제로는 user_id값을 받아옴)
         // 토큰을 헤더에 포함시켜서 유저 정보를 요청
-        console.log(res.data);
-        let token = res.data.result;
+        console.log(res.data)
+        let token = res.data.result.AT
+        let userIdx = res.data.result.userIdx
         let config = {
           headers: {
             'access-token': token
-          }
+          },
+          query: {'userIdx' : userIdx}
         }
           axios
           .get('http://localhost:3001/api/members/question', config) // header 설정을 위해 config 선언, get 두번째 인자.
           .then(res => {
             let userInfo = {
-            nickName: res.data.data.nickName,
-            stampImg: res.data.data.stampImg,
-            question: res.data.data.question
+            nickName: res.data.result.nickName,
+            stampImg: res.data.result.stampImg,
+            question: res.data.result.question
           }
           console.log(res)
           commit('loginSuccess',userInfo)
-          router.push({name:'mainpage'})
+          router.push({name:'mainpage', query:{userIdx: userIdx}})
         })
-        .catch(() => {
+        .catch(err => {
+          console.log(err)
           commit('loginEmailError')
         })
       })
       .catch(err => {
-        console.log(err);
+        console.log(err)
         commit('loginEmailError')
       })
     },
