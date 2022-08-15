@@ -72,7 +72,7 @@ export default new Vuex.Store({
           headers: {
             'access-token': token
           },
-          params: {'userIdx' : userIdx}
+          params: {userIdx : userIdx}
         }
           axios
           .get('http://localhost:3001/api/members/question', config) // header 설정을 위해 config 선언, get 두번째 인자.
@@ -86,7 +86,7 @@ export default new Vuex.Store({
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
-          router.push({name:'mainpage', query:{userIdx: userIdx}})
+          router.push({name:'mainpage', params:{userIdx: userIdx}})
         })
         .catch(err => {
           console.log(err)
