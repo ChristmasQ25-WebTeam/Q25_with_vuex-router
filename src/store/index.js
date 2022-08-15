@@ -71,10 +71,11 @@ export default new Vuex.Store({
         let config = {
           headers: {
             'access-token': token
-          }
+          },
+          params: {'userIdx' : userIdx}
         }
           axios
-          .get('http://localhost:3001/api/members/question', config, {query: {'userIdx' : userIdx}}) // header 설정을 위해 config 선언, get 두번째 인자.
+          .get('http://localhost:3001/api/members/question', config) // header 설정을 위해 config 선언, get 두번째 인자.
           .then(res => {
             let userInfo = {
             nickName: res.data.result.nickName,
