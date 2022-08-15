@@ -66,7 +66,7 @@
       </div>
 
     <div id="contentsBox">
-      <div v-for="(qCollectionInfo,i) in questions" :key="i">
+      <div :v-for="(qCollectionInfo,i) in questions" :key="i">
         <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
@@ -282,6 +282,7 @@ export default {
     },
     data() {
         return{
+            qCollectionInfo : {},
             질문상자들 : data,
             day이미지 : data2,
             ooops : false,
@@ -308,24 +309,6 @@ export default {
             question_25_content:question_25,
             gift_select:0,
 
-
-            questionList: [
-            '한 해 동안 가장 잘했다고 생각되는 결정 3가지',
-            '올해 읽었던 책이나 본 영화, 공연 중 가장 인상깊었던 것과 그 이유는?',
-            '내년의 목표는 무엇이고 내년의 나는 어떤 사람이 되면 좋을까요?',
-            '올해의 장소를 꼽아본다면, 어디로 꼽고 싶나요?',
-            '이번 크리스마스에 하고 싶은 일이 있다면 무엇인가요? 어떤 하루가 되길 바라나요?',
-            '이번년도에 있었던 가장 행복한 일은 무엇인가요?',
-            '올해 나에게 가장 영향을 많이 끼친 사람이 있다면 누구인가요? 그 이유는?',
-            '이번년도에 깨달은 교훈이 있나요?',
-            '올해 가장 힘이 되었던 노래는 무엇인가요?',
-            '올해를 떠올려보았을 때 생각나는 감정은 무엇인가요? 그 이유는 무엇인가요?',
-            '올해 새롭게 관심을 가지게 된 것이 있나요?',
-            '나와 함께해준 사람(들)에게 전하지 못한 말이 있다면?',
-            '스스로에게 가장 성장통을 많이 준 올해의 경험이 있다면?',
-            '1년중 가장 인상깊었던 사건이 있다면 무엇인가요?',
-            '올해 가장 많이 성장한 부분은 무엇인가요?'
-            ],
             email : '',
             nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
@@ -362,7 +345,7 @@ export default {
       axios
       .get('http://localhost:3001/api/members/question/collection')
       .then(res => {
-         let qCollectionInfo = {
+        qCollectionInfo = {
           qnaData: res.data.result,
           nickName: res.data.result.nickName,
           questions: res.data.result.question,
@@ -370,7 +353,6 @@ export default {
           qnacontent: res.data.result.question.qnacontent,
           answer: res.data.result.question.answer
         }
-        
         console.log(res);
       })
       .catch(err => {

@@ -10,6 +10,7 @@ export default new Vuex.Store({
     userInfo: null,
     isLogin: false,
     isError: false,
+    isLoading: false
   },
   mutations: {
     // 로그인이 성공했을 때,
@@ -33,8 +34,24 @@ export default new Vuex.Store({
       state.isError = false
       state.userInfo = null
       state.token = '';
+      localStorage.removeItem('login.accessToken')
+      
       axios
       .delete('http://localhost:3001/api/members/logout')
+    },
+    saveStateToStorage(state) {
+      localStorage.setItem('login.accessToken',state.token)
+    },
+    readStateFromStorage(state) {
+      if (localStorage.getItem('login.accessToken') != null) {
+        state.token = localStorage.getItem('login.accessToken')
+      }
+    },
+    loadingOn(state) {
+      state.isLoading = true
+    },
+    loadingOff(state) {
+      state.isLoading = false
     }
   },
   actions: {
@@ -42,6 +59,7 @@ export default new Vuex.Store({
     // 로그인 시도
     login({ commit }, loginObj) {
       // 통신1. 로그인 -> 토큰 반환
+      commit('loadingOn')
       axios
       .post('http://localhost:3001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
       .then(res => {
@@ -53,11 +71,10 @@ export default new Vuex.Store({
         let config = {
           headers: {
             'access-token': token
-          },
-          query: {'userIdx' : userIdx}
+          }
         }
           axios
-          .get('http://localhost:3001/api/members/question', config) // header 설정을 위해 config 선언, get 두번째 인자.
+          .get('http://localhost:3001/api/members/question', config, {query: {'userIdx' : userIdx}}) // header 설정을 위해 config 선언, get 두번째 인자.
           .then(res => {
             let userInfo = {
             nickName: res.data.result.nickName,
@@ -66,15 +83,19 @@ export default new Vuex.Store({
           }
           console.log(res)
           commit('loginSuccess',userInfo)
+          commit('saveStateToStorage')
+          commit('loadingOff')
           router.push({name:'mainpage', query:{userIdx: userIdx}})
         })
         .catch(err => {
           console.log(err)
+          commit('loadingOff')
           commit('loginError')
         })
       })
       .catch(err => {
         console.log(err)
+        commit('loadingOff')
         commit('loginError')
       })
     },
@@ -85,6 +106,9 @@ export default new Vuex.Store({
       commit('logout')
       localStorage.removeItem('access_token')
       router.push({name: 'home'})
+    },
+    doReadStateFromStorage({commit}) {
+      commit('readStateFromStorage')
     }
     }
   }
