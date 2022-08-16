@@ -143,7 +143,7 @@
       <div class="modal_background" v-if="changepwOpen == true">
         <div class="modal_box">
           <h4>비밀번호가 변경되었습니다</h4>
-          <button @click="togo_Qlist_page">확인</button>
+          <button @click="check_finish">확인</button>
         </div>
       </div>
     </div>
@@ -374,6 +374,7 @@ import { mapState } from 'vuex'
 import axios from 'axios'
 import data from '../assets/test_data1.js';
 // import data2 from '../assets/test_data2.js';
+import { changePw } from '../api/changepw';
 
 
 export default {
@@ -570,21 +571,38 @@ export default {
         this.goodbye_finish_page = true;
       }
     },
-    changepw_submit(e){
-      e.preventDefault();
-      if(this.chknewPw == false){
+    async changepw_submit(){
+      const pwData = {
+        userIdx: 1,
+        old_pw: this.old_pw,
+        new_pw: this.new_pw
+      }
+      const { data } = await changePw(pwData);
+      console.log(data);
+      if(this.chknewPw == false || this.new_pw == ''){
         this.newpwOpen = true;
         this.oldpwOpen = false;
         this.changepwOpen = false;
       }
-      // api 받아와서 수정해야함
       else if(this.old_pw == ''){
         this.oldpwOpen = true;
         this.changepwOpen = false;
       }
-      else if(this.chknewPw == true && this.old_pw !== ''){
+      else if(this.chknewPw == true && data.code == 1000){
         this.changepwOpen = true;
+        this.initForm();
+        // this.old_pw_true = this.old_pw;
+        // this.new_pw_true = this.new_pw;
       }
+      // else if(this.chknewPw == true && this.old_pw !== ''){
+      //   this.changepwOpen = true;
+      //   this.old_pw_true = this.old_pw;
+      //   this.new_pw_true = this.new_pw;
+      // }
+    },
+    initForm() {
+      this.old_pw = '';
+      this.new_pw = '';
     },
     check(){
       this.nickOpen = false;
@@ -597,6 +615,11 @@ export default {
       this.oldpwOpen = false;
       this.newpwOpen = false;
       this.setting_page = false;
+      this.changepwOpen = false;
+    },
+    check_finish(){
+      this.changepwOpen = false;
+      this.Q_list_page = true;
     },
     chkInput(){
       if (this.password.length < 6){
