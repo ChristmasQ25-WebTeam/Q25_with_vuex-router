@@ -20,10 +20,10 @@
           </div>
           <div class="ooops_line"></div>
         </div>
-        <button @click="ooops=false">확인</button>
+        <button @click="ooops_close">확인</button>
       </div>
     </div>
-  </div>
+  </div> 
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
@@ -31,13 +31,13 @@
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <p> 선물상자는 1번부터 열어주세요 :) </p>
+      <p> 선물상자는 해당일 자정에 오픈됩니다 :) </p>
     </div>
 
     <div id="allBox">
-      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
-        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
-        {{i+1}}
+      <div :v-for="(boxImg,i) in userInfo.question" :key="i" @click="open_question">
+        <img :src="require(`${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        {{i+1}} 
       </div>
     </div>
     <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
@@ -50,8 +50,12 @@
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <!-- <img :src="require(`@/assets/${dayLoading.dayImg}`)" alt="image" id='dayImg'> -->
     </div>
+    <transition appear name="fade">
+        <img v-for='day in day이미지' :key="day" :src="require(`@/assets/${day.dayimg}`)" alt="image" id='dayImg'/>
+    </transition>
+    
+    <div id="day_text">Day {{dayNum}} </div>
   </div>
 
 <!-- 리지 : 답변 모아보기 view -->
@@ -387,9 +391,10 @@ export default {
             Q_list_page : true,
             Q_gather_page : false,
 
-            nickName : '',
+            nickName1 : 'abcd',
             opened : 1,
             answerY_N:0,
+            dayNum : 0,
 
 
             start_page : true,
@@ -402,6 +407,7 @@ export default {
             goodbye_finish_page : false,
             changePw_page : false,
             setting_page : false,
+
             imgCredit_page : false,
             qna_answer_page:false,
             qna_answer:[],
@@ -458,6 +464,31 @@ export default {
         }
     },
     methods: {
+
+    getQuestions() {
+      axios
+      .get('http://localhost:5001/api/members/question/collection')
+      .then(res => {
+        qCollectionInfo = {
+          qnaData: res.data.result,
+          nickName: res.data.result.nickName,
+          questions: res.data.result.question,
+          qNum: res.data.result.question.qNum,
+          qnacontent: res.data.result.question.qnacontent,
+          answer: res.data.result.question.answer
+        }
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    goto_QnApage() {
+      this.Q_gather_page=false;
+      this.qna_answer_page=true;
+    },
     togo_answerGrouping_page(){
       this.Q_list_page=false;
       this.Q_gather_page=true;
@@ -625,7 +656,7 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target.nextSibling)
+      // console.log(event.target.nextSibling)
       // const testqNum = event.target.nextSibling;
       // console.log(question.opened)
       // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
@@ -634,9 +665,15 @@ export default {
           this.ooops=true;
         }
         else if(this.opened==1){
+          this.dayNum = event.target.nextSibling;
+          console.log(this.dayNum);
           if(this.answerY_N==0){
             // this.loading_page=true;
-            this.qna_answer_page=true;
+            setTimeout(function(){
+              this.qna_answer_page=true;
+              this.loading_page=false;
+            }.bind(this),2000)
+            this.loading_page=true;
             this.Q_list_page=false;
           }
          else if(this.answerY_N==1){
@@ -653,8 +690,15 @@ export default {
     togo_write_answer() {
       this.qna_answer_page=true;
       this.Q_list_page=false;
+    },
+    ooops_close(){
+      this.ooops=false;
+      this.Q_list_page=true;
+    },
+    submit() {
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
     }
-
 
     }
 }
@@ -702,16 +746,38 @@ body {
 }
 
 /* 엘 */
-#Q_list_page #setting {
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+#Q_list_page #setting{
   position: absolute;
   width: 24px;
   top: 25px;
   right: 30px;
 }
-.day_img{
+#day_text {
+  font-size: 50px;
+  color: white;
+  margin-top: 30px;
+}
+#dayImg{
   width: 200px;
   height: 200px;
 }
+/* #dayImg-enter{
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+#dayImg-active{
+  transition: opacity 2s ease-in;
+}
+#dayImg-leave-active{
+  transition: opacity 2s ease-out;
+} */
 #ooopsBox_bg {
   /* 배경블러처리 블랙, 화이트 고민 */
   background-color: #00000091;
