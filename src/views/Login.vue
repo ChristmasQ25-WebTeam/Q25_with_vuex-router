@@ -1,32 +1,22 @@
 <template>
 <div>
-  <div v-if="login_page==true">
+  <!-- 리지 : 로그인창 view -->
+  <div v-if="login_page == true">
     <!-- 로그인 실패 모달창 페이지 -->
+    <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div></div>
+
       <div class="container">
-        <div v-if="isEmailError">
+        <div v-if="isError">
             <div class="modal-black">
               <div class="modal-yellow">
-                <h4>등록되지 않은 이메일입니다</h4>
+                <h4>이메일 또는 비밀번호를
+                  <br>확인해주세요</h4>
                 <button @click="close">확인</button>
               </div>
             </div>
         </div>
-        <div v-if="isPwError">
-            <div class="modal-black">
-              <div class="modal-yellow">
-                <h4>잘못된 비밀번호입니다</h4>
-                <button @click="close">확인</button>
-              </div>
-            </div>
-        </div>
-        <!-- <div v-if="isLogin">
-          <div class="modal-black">
-            <div class="modal-yellow">
-              <h4>로그인이 완료되었습니다</h4>
-              <button @click="close">확인</button>
-            </div>
-          </div>
-        </div> -->
+
         <div id="title">Christmas Q25</div>
         <div class="subtitle">- 당신의 1년을 정리하는 25개의 질문 -</div>
         <div><img id="logo_2" src="../assets/01_wreath.png"></div>
@@ -56,27 +46,27 @@
 <!-- 자몽 : 비번찾기 view -->
   <div v-if="pw_find_page == true">
 
-    <!--모달창(임시비밀번호)-->
-    <!--<div class="modal_bg" v-if="pk_find_modal == true">
+<!--이메일이 있는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmail">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
           <span class="jm_modal_title">발송하였습니다</span>
           <span class="mail">메일함을 확인해주세요</span>
           <hr />
-          <span @click="pk_find_modal = false" class="ok">확인</span>
+          <span @click="close" class="ok">확인</span>
         </div>
       </div>
-    </div>-->
+    </div>
 
-    <!--이메일 없는 경우 모달창 ) API작업후 추가-->
-    <div class="modal_bg" v-if="no_email_modal == true">
+    <!--이메일 없는 경우 모달창 -->
+    <div class="modal_bg" v-if="isEmailError">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
           <span class="jm_modal_title">이메일입니다</span>
           <hr>
-        <span @click="no_email_modal= false" class="ok">확인</span>
+        <span @click="close" class="ok">확인</span>
         </div>
       </div>
       </div>
@@ -84,8 +74,7 @@
     <!--임시 비밀번호 발송 메인창-->
 
     <header class="home_icon">
-      <!--<i @click="home_button" class="material-icons">keyboard_arrow_left</i>-->
-      <!-- <img @click="home_button" alt="Vue logo" src="./assets/left-arrow.png" /> -->
+      <i class="material-icons" @click="pwToHomeBtn">keyboard_arrow_left</i>
       <span class="back">홈으로</span>
     </header>
 
@@ -109,7 +98,7 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="no_email_modal = true">완료</button>
+      <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
 
 <!-- 미니 : 회원가입 view-->
@@ -133,13 +122,12 @@
           <button @click="check">확인</button>
         </div>
       </div>
-      <!-- api 연동 후 사용할 것 -->
-      <!-- <div class="modal_background check-email" v-if="emailOpen == true">
+      <div class="modal_background check-email" v-if="emailOpen == true">
         <div class="modal_box">
           <h4>이미 등록된 이메일입니다</h4>
           <button @click="check">확인</button>
         </div>
-      </div> -->
+      </div>
       <div class="modal_background check-nickname" v-if="nickOpen == true">
         <div class="modal_box">
           <h4>닉네임을 입력해주세요</h4>
@@ -169,7 +157,7 @@
               <span>이메일을 입력해주세요!</span>
             </div>
             <div class="input-box email-input">
-              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!">
+              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!" @change="chkEmailInput()">
               <br>
               <!-- <button class="overlap-btn" @click="chkOverlap">중복확인</button>
               <img src="../src/assets/05_check.png" alt="중복확인" v-if="chkEmail == true"> -->
@@ -200,6 +188,7 @@
 <script>
 /* eslint-disable */
 import { mapState, mapActions } from 'vuex'
+import { registerUser } from '../api/index';
 export default {
   data() {
     return {
@@ -224,12 +213,15 @@ export default {
       chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
-      emailformOpen: false
-     
+      emailformOpen: false,
+
+      password_true:'',
+      email_true:''
+
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isEmailError', 'isPwError'])
+    ...mapState(['isLogin', 'isError', 'isLoading'])
   },
   methods: {
     ...mapActions(['login','close']),
@@ -249,36 +241,61 @@ export default {
       this.signUp_page = false;
     },
 
-    submit (e) {
-      e.preventDefault();
+    pwtohomebtn(){
+      this.pw_find_page = false;
+      this.login_page=true;
+    },
+
+     async submit () {
+      const userData = {
+        nickName: this.nickName,
+        email: this.email_true,
+        password: this.password_true
+      }
+      const { data } = await registerUser(userData);
+      console.log(data);
       if (this.nickName == ''){
         this.nickOpen = true;
         this.emailformOpen = false;
-        // this.emailOpen = false;
+        this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
       }
-      else if (!this.chkEmailForm.test(this.email)){
+      else if (this.email == '' || this.chkEmail == false){
         this.emailformOpen = true;
+        this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
+        // this.email_true = this.email;
       }
-      // else if (this.chkEmail == false){
-      //   this.emailOpen = true;
+      // else if (!this.chkEmailForm.test(this.email)){
+      //   this.emailformOpen = true;
+      //   this.emailOpen = false;
       //   this.pwOpen = false;
       //   this.pwformOpen = false;
+      //   // this.email_true = this.email;
       // }
       else if (this.password == ''){
+        this.email_true = this.email;
+        // console.log("형식 테스트 후", "검증 전", this.email, "검증 후", this.email_true);
         this.pwOpen = true;
         this.pwformOpen = false;
       }
       else if (this.chkPw == false){
+        this.email_true = this.email;
         this.pwformOpen = true;
       }
       else {
+        this.email_true = this.email;
+        this.initForm();
         this.login_page=true;
         this.signUp_page=false;
       }
+    },
+    initForm() {
+      this.nickName = '';
+      this.password = '';
+      this.email = '';
     },
 
     check () {
@@ -306,8 +323,23 @@ export default {
       }
       if(this.password.length > 5 && this.chkNum.test(this.password) && this.chkEng.test(this.password))
         this.chkPw = true;
+        if(this.chkPw == true){
+          this.password_true = this.password;
+        }
     },
-
+    chkEmailInput(){
+      if (!this.chkEmailForm.test(this.email)){
+        this.chkEmail = false;
+        this.emailformOpen = true;
+        this.emailOpen = false;
+        this.pwOpen = false;
+        this.pwformOpen = false;
+      }
+      else if(this.chkEmailForm.test(this.email)){
+        this.chkEmail = true;
+        this.email_true = this.email;
+      }
+    },
     chkOverlap(){
       this.chkEmail = true;
     },
@@ -315,7 +347,14 @@ export default {
     pwBtnOn(){
       this.login_page=false;
       this.pw_find_page=true;
+    },
+
+    pwToHomeBtn(){
+      this.login_page=true;
+      this.pw_find_page=false;
     }
+
+
   }
 }
 </script>
@@ -405,6 +444,89 @@ body {
 }
 
 /* 가입후 시작 view css */
+.lds-spinner {
+  color: official;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #fff;
+}
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
 .inputBox {
     width: 200px; height: 41px;
     border-radius: 5px;
@@ -462,21 +584,22 @@ body {
 }
 
 .modal-black {
-  width: 400px;
-  height: 660px;
-  background: rgba(217,217,217,0.7);
+  width: 100%;
+  height: 100%;
+  background: #00000091;
   position: fixed;
-  right: 650px;
-  bottom: 50px;
+  top: 0; left: 0; right: 0;
 }
 
 .modal-yellow {
   width: 223px;
-  height: 110px;
+  height: 120px;
   background: #F4E7B6;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 10px;
   padding: 16px;
-  margin: 246px 68px;
 }
 
 .modal-yellow button {
@@ -491,7 +614,7 @@ body {
 }
 
 .modal-yellow h4 {
-  padding: 20px 0 30px 0;
+  padding: 20px 0 20px 0;
   border-bottom: 0.3px solid #000;
   font-size: 16px;
   font-weight: 800;
