@@ -63,20 +63,21 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+          <div><span class="userName">{{ nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div v-for="(question,i) in questionList" :key="question">
-        <div class="questionBox">
+      <div v-for="item in question" :key="item">
+        <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{i+1}}. &nbsp;</span>
-            <span>{{question}}</span><br>
+            <span id="Q_inquestion">Q{{ item.qNum }}. &nbsp;</span>
+            <span>{{ item.qnacontent }}</span><br><br>
             <span id="Q_inquestion">A. &nbsp;</span>
+            <span>{{ item.answer }}</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
@@ -145,7 +146,7 @@
       <div class="modal_background" v-if="changepwOpen == true">
         <div class="modal_box">
           <h4>비밀번호가 변경되었습니다</h4>
-          <button @click="togo_Qlist_page">확인</button>
+          <button @click="check_finish">확인</button>
         </div>
       </div>
     </div>
@@ -256,7 +257,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn">로그아웃</h4>
+          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn" @click="togo_imgCredit_page">이미지 크레딧 보기</h4>
@@ -376,9 +377,11 @@ import { mapState } from 'vuex'
 import axios from 'axios'
 import data from '../assets/test_data1.js';
 // import data2 from '../assets/test_data2.js';
+import { changePw } from '../api/changepw';
 
 
 export default {
+    name: 'mainpage',
     // data : () => ({
     //   boxImg : ''
     // }),
@@ -418,7 +421,7 @@ export default {
             gift_select:0,
 
             email : '',
-            nickName : '',
+            // nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
             ClickButton : false,
             nickOpen: false,
@@ -449,34 +452,27 @@ export default {
         }
     },
     methods: {
-
-    getQuestions() {
-      axios
-      .get('http://localhost:3001/api/members/question/collection')
-      .then(res => {
-        qCollectionInfo = {
-          qnaData: res.data.result,
-          nickName: res.data.result.nickName,
-          questions: res.data.result.question,
-          qNum: res.data.result.question.qNum,
-          qnacontent: res.data.result.question.qnacontent,
-          answer: res.data.result.question.answer
-        }
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-
-    },
-
     goto_QnApage() {
       this.Q_gather_page=false;
       this.qna_answer_page=true;
     },
     togo_answerGrouping_page(){
-      this.Q_list_page=false;
-      this.Q_gather_page=true;
+      axios
+      .get('http://localhost:3001/api/members/question/collection')
+      .then(res => {
+        this.nickName = res.data.result.nickName
+        this.question = res.data.result.question
+        this.qNum = res.data.result.question.qNum
+        this.qnacontent = res.data.result.question.qnacontent
+        this.answer = res.data.result.question.answer
+        console.log(res);
+        this.Q_list_page=false;
+        this.Q_gather_page=true;
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
     },
     togo_Qlist_page(){
       this.Q_list_page=true;
@@ -574,21 +570,38 @@ export default {
         this.goodbye_finish_page = true;
       }
     },
-    changepw_submit(e){
-      e.preventDefault();
-      if(this.chknewPw == false){
+    async changepw_submit(){
+      const pwData = {
+        userIdx: 1,
+        old_pw: this.old_pw,
+        new_pw: this.new_pw
+      }
+      const { data } = await changePw(pwData);
+      console.log(data);
+      if(this.chknewPw == false || this.new_pw == ''){
         this.newpwOpen = true;
         this.oldpwOpen = false;
         this.changepwOpen = false;
       }
-      // api 받아와서 수정해야함
       else if(this.old_pw == ''){
         this.oldpwOpen = true;
         this.changepwOpen = false;
       }
-      else if(this.chknewPw == true && this.old_pw !== ''){
+      else if(this.chknewPw == true && data.code == 1000){
         this.changepwOpen = true;
+        this.initForm();
+        // this.old_pw_true = this.old_pw;
+        // this.new_pw_true = this.new_pw;
       }
+      // else if(this.chknewPw == true && this.old_pw !== ''){
+      //   this.changepwOpen = true;
+      //   this.old_pw_true = this.old_pw;
+      //   this.new_pw_true = this.new_pw;
+      // }
+    },
+    initForm() {
+      this.old_pw = '';
+      this.new_pw = '';
     },
     check(){
       this.nickOpen = false;
@@ -601,6 +614,11 @@ export default {
       this.oldpwOpen = false;
       this.newpwOpen = false;
       this.setting_page = false;
+      this.changepwOpen = false;
+    },
+    check_finish(){
+      this.changepwOpen = false;
+      this.Q_list_page = true;
     },
     chkInput(){
       if (this.password.length < 6){

@@ -11,7 +11,7 @@ export default new Vuex.Store({
     userInfo: null,
     isLogin: false,
     isError: false,
-    isLoading: false
+    isLoading: false,
   },
   mutations: {
     // 로그인이 성공했을 때,
@@ -37,9 +37,6 @@ export default new Vuex.Store({
       state.userInfo = null
       state.token = '';
       localStorage.removeItem('login.accessToken')
-      
-      axios
-      .delete('http://localhost:3001/api/members/logout')
     },
     saveStateToStorage(state) {
       localStorage.setItem('login.accessToken',state.token)
@@ -96,10 +93,9 @@ export default new Vuex.Store({
           console.log('스탬프 붙일 상자번호 : '+ stampNumList+'/근데 이 리스트를 mainpage.vue로 옮겨야하는데 아직 못함')
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
-          commit('loadingOff')  
-          console.log(config)
+          commit('loadingOff')
           router.push({name:'mainpage', config})
-        }) 
+        })
         .catch(err => {
           console.log(err)
           commit('loadingOff')
@@ -117,8 +113,23 @@ export default new Vuex.Store({
     },
     logout({commit}) {
       commit('logout')
-      localStorage.removeItem('access_token')
+      // localStorage.removeItem('access_token')
       router.push({name: 'home'})
+
+      axios
+      .delete('http://localhost:3001/api/members/logout')
+      .then(response => {
+        // handle success
+        console.log(response);
+    })
+    .catch(error => {
+        // handle error
+        console.log(error);
+    })
+    .then(() => {
+        // always executed
+    });
+  
     },
     doReadStateFromStorage({commit}) {
       commit('readStateFromStorage')
