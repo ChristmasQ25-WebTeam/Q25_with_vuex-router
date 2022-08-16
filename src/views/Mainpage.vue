@@ -40,13 +40,13 @@
         {{i+1}}
       </div>
     </div>
-    <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
+    <button id="answer_group" @click="[togo_answerGrouping_page(), getQuestions()]">답변 모아보기</button>
   </div>
 
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -59,20 +59,21 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+          <div><span class="userName">{{ qCollectionInfo.nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div v-for="(question,i) in questionList" :key="question">
-        <div class="questionBox">
+      <div :v-for="(qCollectionInfo,i) in questions" :key="i">
+        <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{i+1}}. &nbsp;</span>
-            <span>{{question}}</span><br>
+            <span id="Q_inquestion">Q{{qCollectionInfo.qNum}}. &nbsp;</span>
+            <span>{{qCollectionInfo.qnacontent}}</span><br>
             <span id="Q_inquestion">A. &nbsp;</span>
+            <span>{{qCollectionInfo.answer}}</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
@@ -251,7 +252,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn">로그아웃</h4>
+          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn" @click="togo_imgCredit_page">이미지 크레딧 보기</h4>
@@ -366,9 +367,9 @@
 
 <script>
 /* eslint-disable */
-import question_25 from '../assets/question_25.js';
-import { mapState } from 'vuex'
 import axios from 'axios'
+import question_25 from '../assets/question_25.js';
+import { mapState, mapActions } from 'vuex'
 import data from '../assets/test_data1.js';
 import data2 from '../assets/test_data2.js';
 
@@ -381,6 +382,7 @@ export default {
     },
     data() {
         return{
+            qCollectionInfo : {},
             질문상자들 : data,
             day이미지 : data2,
             ooops : false,
@@ -408,24 +410,6 @@ export default {
             question_25_content:question_25,
             gift_select:0,
 
-
-            questionList: [
-            '한 해 동안 가장 잘했다고 생각되는 결정 3가지',
-            '올해 읽었던 책이나 본 영화, 공연 중 가장 인상깊었던 것과 그 이유는?',
-            '내년의 목표는 무엇이고 내년의 나는 어떤 사람이 되면 좋을까요?',
-            '올해의 장소를 꼽아본다면, 어디로 꼽고 싶나요?',
-            '이번 크리스마스에 하고 싶은 일이 있다면 무엇인가요? 어떤 하루가 되길 바라나요?',
-            '이번년도에 있었던 가장 행복한 일은 무엇인가요?',
-            '올해 나에게 가장 영향을 많이 끼친 사람이 있다면 누구인가요? 그 이유는?',
-            '이번년도에 깨달은 교훈이 있나요?',
-            '올해 가장 힘이 되었던 노래는 무엇인가요?',
-            '올해를 떠올려보았을 때 생각나는 감정은 무엇인가요? 그 이유는 무엇인가요?',
-            '올해 새롭게 관심을 가지게 된 것이 있나요?',
-            '나와 함께해준 사람(들)에게 전하지 못한 말이 있다면?',
-            '스스로에게 가장 성장통을 많이 준 올해의 경험이 있다면?',
-            '1년중 가장 인상깊었던 사건이 있다면 무엇인가요?',
-            '올해 가장 많이 성장한 부분은 무엇인가요?'
-            ],
             email : '',
             nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
@@ -458,6 +442,30 @@ export default {
         }
     },
     methods: {
+    getQuestions() {
+      axios
+      .get('http://localhost:3001/api/members/question/collection')
+      .then(res => {
+        qCollectionInfo = {
+          qnaData: res.data.result,
+          nickName: res.data.result.nickName,
+          questions: res.data.result.question,
+          qNum: res.data.result.question.qNum,
+          qnacontent: res.data.result.question.qnacontent,
+          answer: res.data.result.question.answer
+        }
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    goto_QnApage() {
+      this.Q_gather_page=false;
+      this.qna_answer_page=true;
+    },
     togo_answerGrouping_page(){
       this.Q_list_page=false;
       this.Q_gather_page=true;
@@ -937,6 +945,7 @@ body {
   display: inline-block;
   text-align: justify;
   margin: 5px;
+  cursor: pointer;
 }
 
 .questionBox_line {
@@ -1040,7 +1049,7 @@ display: none;
 
 textarea:focus {outline: none;}
 textarea::placeholder {
-	color: #ccc;
+   color: #ccc;
   padding: 20px 5px;
 }
 

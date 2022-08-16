@@ -1,21 +1,17 @@
 <template>
 <div>
   <!-- 리지 : 로그인창 view -->
-  <div v-if="login_page==true">
+  <div v-if="login_page == true">
     <!-- 로그인 실패 모달창 페이지 -->
+    <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
+    <div></div><div></div><div></div><div></div><div></div><div></div></div>
+
       <div class="container">
-        <div v-if="isEmailError">
+        <div v-if="isError">
             <div class="modal-black">
               <div class="modal-yellow">
-                <h4>등록되지 않은 이메일입니다</h4>
-                <button @click="close">확인</button>
-              </div>
-            </div>
-        </div>
-        <div v-if="isPwError">
-            <div class="modal-black">
-              <div class="modal-yellow">
-                <h4>잘못된 비밀번호입니다</h4>
+                <h4>이메일 또는 비밀번호를
+                  <br>확인해주세요</h4>
                 <button @click="close">확인</button>
               </div>
             </div>
@@ -222,7 +218,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isEmailError', 'isPwError'])
+    ...mapState(['isLogin', 'isError', 'isLoading'])
   },
   methods: {
     ...mapActions(['login','close']),
@@ -423,6 +419,89 @@ body {
 }
 
 /* 가입후 시작 view css */
+.lds-spinner {
+  color: official;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-spinner div {
+  transform-origin: 40px 40px;
+  animation: lds-spinner 1.2s linear infinite;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.lds-spinner div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 37px;
+  width: 6px;
+  height: 18px;
+  border-radius: 20%;
+  background: #fff;
+}
+.lds-spinner div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -1.1s;
+}
+.lds-spinner div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -1s;
+}
+.lds-spinner div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.9s;
+}
+.lds-spinner div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.8s;
+}
+.lds-spinner div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.7s;
+}
+.lds-spinner div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.6s;
+}
+.lds-spinner div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.5s;
+}
+.lds-spinner div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.4s;
+}
+.lds-spinner div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.3s;
+}
+.lds-spinner div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.2s;
+}
+.lds-spinner div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.1s;
+}
+.lds-spinner div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
+@keyframes lds-spinner {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
 .inputBox {
     width: 200px; height: 41px;
     border-radius: 5px;
@@ -489,7 +568,7 @@ body {
 
 .modal-yellow {
   width: 223px;
-  height: 110px;
+  height: 120px;
   background: #F4E7B6;
   position: absolute;
   top: 50%; left: 50%;
@@ -510,7 +589,7 @@ body {
 }
 
 .modal-yellow h4 {
-  padding: 20px 0 30px 0;
+  padding: 20px 0 20px 0;
   border-bottom: 0.3px solid #000;
   font-size: 16px;
   font-weight: 800;
