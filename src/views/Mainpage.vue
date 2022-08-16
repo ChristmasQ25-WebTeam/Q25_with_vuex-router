@@ -1,6 +1,7 @@
 <template>
 <div>
-<!-- 회원별 박스 view -->
+
+<!-- 엘 : 회원별 박스 view -->
   <div v-if="ooops==true" id="ooopsBox_bg">
     <div id="ooopsBox">
       <div>
@@ -15,70 +16,68 @@
             조금만 기다려주세요:)
           </div>
           <div>
-            <img src="@/assets/03_gift_opened_sticker.png" alt="">
+            <img src="@/assets/13_oops.png" alt="">
           </div>
           <div class="ooops_line"></div>
         </div>
-        <button @click="ooops=false">확인</button>
+        <button @click="ooops_close">확인</button>
       </div>
     </div>
-  </div>
+  </div> 
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <p> 선물상자는 1번부터 열어주세요 :) </p>
+      <p> 선물상자는 해당일 자정에 오픈됩니다 :) </p>
     </div>
-    <div class="newcontents">
-      <!-- 반복문활용 -->
-      <div v-for="i in 8" :key="i">
-        <div @click="open_question" v-for="j in 3" :key="j">
-          <!-- <img src="./assets/13_oops.png" alt="" v-if="filled_sticker"> -->
-          <img v-if="(3*(i-1)+j)<10" :src="require(`@/assets/06_gift0${3*(i-1)+j}.png`)" alt="" id='giftbox'>
-          <img v-if="(3*(i-1)+j)>9" :src="require(`@/assets/06_gift${3*(i-1)+j}.png`)" alt="" id='giftbox'>
-          {{3*(i-1)+j}}
-        </div>
-        <div  @click="open_question" v-if='i==8'>
-          <img src="../assets/06_gift25.png" alt="" id="giftbox_25">
-          25
-        </div>
+
+    <div id="allBox">
+      <div :v-for="(boxImg,i) in userInfo.question" :key="i" @click="open_question">
+        <img :src="require(`${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        {{i+1}} 
       </div>
-
-      <!-- 그냥 나열 -->
-      <!-- <div>
-        <div id="box_1">
-          <img src="" alt="">
-          1
-        </div>
-        <div></div>
-        <div></div>
-      </div> -->
-
     </div>
-    <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
+    <button id="answer_group" @click="[togo_answerGrouping_page(), getQuestions()]">답변 모아보기</button>
   </div>
-<!-- 답변 모아보기 view -->
+
+<!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
+  <div v-if="loading_page==true" id="loading_page">
+    <div class="title">
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
+      <div>Christmas Q25</div>
+      <div id="title_line"></div>
+      <p>당신의 1년을 정리하는 25개의 질문</p>
+    </div>
+    <transition appear name="fade">
+        <img v-for='day in day이미지' :key="day" :src="require(`@/assets/${day.dayimg}`)" alt="image" id='dayImg'/>
+    </transition>
+    
+    <div id="day_text">Day {{dayNum}} </div>
+  </div>
+
+<!-- 리지 : 답변 모아보기 view -->
   <div v-if="Q_gather_page==true">
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+          <div><span class="userName">{{ qCollectionInfo.nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div v-for="(question,i) in questionList" :key="question">
-        <div class="questionBox">
+      <div :v-for="(qCollectionInfo,i) in questions" :key="i">
+        <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{i+1}}. &nbsp;</span>
-            <span>{{question}}</span><br>
+            <span id="Q_inquestion">Q{{qCollectionInfo.qNum}}. &nbsp;</span>
+            <span>{{qCollectionInfo.qnacontent}}</span><br>
             <span id="Q_inquestion">A. &nbsp;</span>
+            <span>{{qCollectionInfo.answer}}</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
@@ -89,14 +88,13 @@
         <span><img src="../assets/07_download.png" id="downloadIcon"></span>
       </div>
   </div>
-
 <!-- 자몽: 질문 답변하기 디자인 view -->
 <!--글 발행기능 아직 구현 X => 공부필요-->
-  <div v-if="qna_request_page==true">
+  <div v-if="qna_answer_page==true">
 
 <div class ="qna_requset_header">
- <!-- <i  class="material-icons">keyboard_arrow_left</i>-->
-  <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
+<i class="material-icons" @click="answerToQlist">keyboard_arrow_left</i>
+<span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
 </div>
 
 <div class="qna_request_header_hr">
@@ -258,7 +256,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn">로그아웃</h4>
+          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn">이미지 크레딧 보기</h4>
@@ -273,22 +271,35 @@
 
 <script>
 /* eslint-disable */
+import axios from 'axios'
 import question_25 from '../assets/question_25.js';
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
+import data from '../assets/test_data1.js';
+import data2 from '../assets/test_data2(dayimg).js';
+console.log(data2)
+
 export default {
+    // data : () => ({
+    //   boxImg : ''
+    // }),
     computed: {
         ...mapState(['userInfo'])
     },
     data() {
         return{
-
+            qCollectionInfo : {},
+            질문상자들 : data,
+            day이미지 : data2,
             ooops : false,
             Q_list_page : true,
             Q_gather_page : false,
 
-            nickName : '',
+            nickName1 : 'abcd',
+            opened : 1,
+            answerY_N:0,
+            dayNum : 0,
 
-            qna_request_page:true,
+
             start_page : true,
             introduction_page : false,
             pw_find_page : false,
@@ -299,29 +310,10 @@ export default {
             goodbye_finish_page : false,
             changePw_page : false,
             setting_page : false,
-            qna_request_page:false,
+            qna_answer_page:false,
             qna_request:[],
             question_25_content:question_25,
             gift_select:0,
-
-
-            questionList: [
-            '한 해 동안 가장 잘했다고 생각되는 결정 3가지',
-            '올해 읽었던 책이나 본 영화, 공연 중 가장 인상깊었던 것과 그 이유는?',
-            '내년의 목표는 무엇이고 내년의 나는 어떤 사람이 되면 좋을까요?',
-            '올해의 장소를 꼽아본다면, 어디로 꼽고 싶나요?',
-            '이번 크리스마스에 하고 싶은 일이 있다면 무엇인가요? 어떤 하루가 되길 바라나요?',
-            '이번년도에 있었던 가장 행복한 일은 무엇인가요?',
-            '올해 나에게 가장 영향을 많이 끼친 사람이 있다면 누구인가요? 그 이유는?',
-            '이번년도에 깨달은 교훈이 있나요?',
-            '올해 가장 힘이 되었던 노래는 무엇인가요?',
-            '올해를 떠올려보았을 때 생각나는 감정은 무엇인가요? 그 이유는 무엇인가요?',
-            '올해 새롭게 관심을 가지게 된 것이 있나요?',
-            '나와 함께해준 사람(들)에게 전하지 못한 말이 있다면?',
-            '스스로에게 가장 성장통을 많이 준 올해의 경험이 있다면?',
-            '1년중 가장 인상깊었던 사건이 있다면 무엇인가요?',
-            '올해 가장 많이 성장한 부분은 무엇인가요?'
-            ],
             email : '',
             nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
@@ -349,9 +341,35 @@ export default {
             changepwOpen: false,
             emailformOpen: false,
             chknewPw: true,
+
+
         }
     },
     methods: {
+    getQuestions() {
+      axios
+      .get('http://localhost:5001/api/members/question/collection')
+      .then(res => {
+        qCollectionInfo = {
+          qnaData: res.data.result,
+          nickName: res.data.result.nickName,
+          questions: res.data.result.question,
+          qNum: res.data.result.question.qNum,
+          qnacontent: res.data.result.question.qnacontent,
+          answer: res.data.result.question.answer
+        }
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
+    },
+
+    goto_QnApage() {
+      this.Q_gather_page=false;
+      this.qna_answer_page=true;
+    },
     togo_answerGrouping_page(){
       this.Q_list_page=false;
       this.Q_gather_page=true;
@@ -416,12 +434,16 @@ export default {
       this.pw_find_page=false;
       this.login_page=true;
     },
+    answerToQlist(){
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
+    },
 
     random_Q(){
       console.log(this.nickName)
     },
 
-    
+
     bye_submit(e){
       e.preventDefault();
       // api 받아와서 수정해야함
@@ -504,27 +526,49 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target.data);
-      // if(this.answer==1){
-      //   this.ooops=true;
-      // }
-      // else if(this.answer==null){
-      //   this.Q_list_page=false;
-      //   this.motion_page=true;
+      // console.log(event.target.nextSibling)
+      // const testqNum = event.target.nextSibling;
+      // console.log(question.opened)
+      // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
+      // while(question.qNum==testqNum){
+        if(this.opened==0){
+          this.ooops=true;
+        }
+        else if(this.opened==1){
+          this.dayNum = event.target.nextSibling;
+          console.log(this.dayNum);
+          if(this.answerY_N==0){
+            // this.loading_page=true;
+            setTimeout(function(){
+              this.qna_answer_page=true;
+              this.loading_page=false;
+            }.bind(this),2000)
+            this.loading_page=true;
+            this.Q_list_page=false;
+          }
+         else if(this.answerY_N==1){
+            this.qna_answer_page=true;
+           this.Q_list_page=false;
+        }
+        }
 
-      // }
-
-      // var numBer = event.path[0].nextSibling;
-      // if(this.answer!=null){
-      //   console.log(this.ooops = true)
-        // console.log(this.$refs.getNum[index.index].innerText);
-
-      // }
+      // };
     },
     togo_setting_page() {
       this.setting_page=true;
+    },
+    togo_write_answer() {
+      this.qna_request_page=true;
+      this.Q_list_page=false;
+    },
+    ooops_close(){
+      this.ooops=false;
+      this.Q_list_page=true;
+    },
+    submit() {
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
     }
-
 
     }
 }
@@ -572,23 +616,49 @@ body {
 }
 
 /* 엘 */
-#Q_list_page #setting {
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+#Q_list_page #setting{
   position: absolute;
   width: 24px;
   top: 25px;
   right: 30px;
 }
-.day_img{
+#day_text {
+  font-size: 50px;
+  color: white;
+  margin-top: 30px;
+}
+#dayImg{
   width: 200px;
   height: 200px;
 }
+/* #dayImg-enter{
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+#dayImg-active{
+  transition: opacity 2s ease-in;
+}
+#dayImg-leave-active{
+  transition: opacity 2s ease-out;
+} */
 #ooopsBox_bg {
   /* 배경블러처리 블랙, 화이트 고민 */
   background-color: #00000091;
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
+  left: 0px;
+  top: 0;
+  /* position: absolute; */
   /* position: relative; */
+  z-index: 1;
 }
 #ooopsBox {
   position: relative;
@@ -622,7 +692,7 @@ body {
   font-size: 13px;
   font-family: 'NanumSquareRound';
   font-weight: 500;
-} 
+}
 .ooops_line {
   width: 200px;
   height: 0.3px;
@@ -642,6 +712,7 @@ body {
   cursor: pointer;
 }
 #Q_list_page {
+  z-index: 0;
   overflow: scroll;
   /* position: relative; */
   display: flex;
@@ -661,7 +732,7 @@ body {
   flex-direction: column;
   margin-bottom: 25px;
   /* padding: 0px 60px 20px 60px; */
-  
+
   /* background-color: #920000; */
 }
 .title > #title_line {
@@ -683,47 +754,37 @@ body {
   font-size: 13px;
   margin-top: 5px;
 }
-.newcontents {
+#allBox {
   height: 400px;
   width: 350px;
   display: flex;
-  /* position: sticky; */
   overflow: scroll;
-  flex-direction: column;
   align-items: center;
-  /* margin-top: 30px; */
-  /* padding-top: 175px; */
+  justify-content: center;
+  flex-wrap: wrap;
   background-color: #9b1010;
   border-radius: 10px;
   padding-bottom: 20px;
 
 }
-.newcontents > p {
-  font-family: 'NanumSquareRound';
-  color: white;
-}
-.newcontents > div {
+#allBox > div {
   font-family: 'OFL Sorts Mill Goudy TT';
   font-size: 21px;
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
-}
-.newcontents > div > div {
-  display: flex;
-  flex-direction: column;
+  margin: 15px;
   color: white;
   cursor: pointer;
-  margin: 0 16px;
 }
 #giftbox {
   width: 73px;
   height: 73px;
   margin: 16px 0 5px 0;
   line-height: 100px;
-  
+
 }
 #giftbox_25{
   width: 100px;
@@ -812,6 +873,7 @@ body {
   display: inline-block;
   text-align: justify;
   margin: 5px;
+  cursor: pointer;
 }
 
 .questionBox_line {
@@ -915,7 +977,7 @@ display: none;
 
 textarea:focus {outline: none;}
 textarea::placeholder {
-	color: #ccc;
+   color: #ccc;
   padding: 20px 5px;
 }
 
