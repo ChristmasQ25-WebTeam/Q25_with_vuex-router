@@ -6,6 +6,7 @@ import router from '../router/index.js'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  /* eslint-disable */
   state: {
     userInfo: null,
     allUsers: [
