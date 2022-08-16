@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
+import Vuex from 'vuex'
 import router from '../router/index.js'
 
 Vue.use(Vuex)

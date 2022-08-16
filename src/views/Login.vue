@@ -157,7 +157,7 @@
               <span>이메일을 입력해주세요!</span>
             </div>
             <div class="input-box email-input">
-              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!">
+              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!" @change="chkEmailInput()">
               <br>
               <!-- <button class="overlap-btn" @click="chkOverlap">중복확인</button>
               <img src="../src/assets/05_check.png" alt="중복확인" v-if="chkEmail == true"> -->
@@ -210,10 +210,13 @@ export default {
       chkNum: /[0-9]/,
       chkEng: /[a-zA-Z]/,
       chkEmailForm: /^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-      // chkEmail: false,
+      chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
-      emailformOpen: false
+      emailformOpen: false,
+
+      password_true:'',
+      email_true:''
 
     }
   },
@@ -246,8 +249,8 @@ export default {
      async submit () {
       const userData = {
         nickName: this.nickName,
-        email: this.email,
-        password: this.password
+        email: this.email_true,
+        password: this.password_true
       }
       const { data } = await registerUser(userData);
       console.log(data);
@@ -258,25 +261,32 @@ export default {
         this.pwOpen = false;
         this.pwformOpen = false;
       }
-      else if (!this.chkEmailForm.test(this.email)){
+      else if (this.email == '' || this.chkEmail == false){
         this.emailformOpen = true;
         this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
+        // this.email_true = this.email;
       }
-      // else if (data.code = 3001){
-      //   this.emailOpen = true;
+      // else if (!this.chkEmailForm.test(this.email)){
+      //   this.emailformOpen = true;
+      //   this.emailOpen = false;
       //   this.pwOpen = false;
       //   this.pwformOpen = false;
+      //   // this.email_true = this.email;
       // }
       else if (this.password == ''){
+        this.email_true = this.email;
+        // console.log("형식 테스트 후", "검증 전", this.email, "검증 후", this.email_true);
         this.pwOpen = true;
         this.pwformOpen = false;
       }
       else if (this.chkPw == false){
+        this.email_true = this.email;
         this.pwformOpen = true;
       }
       else {
+        this.email_true = this.email;
         this.initForm();
         this.login_page=true;
         this.signUp_page=false;
@@ -313,8 +323,23 @@ export default {
       }
       if(this.password.length > 5 && this.chkNum.test(this.password) && this.chkEng.test(this.password))
         this.chkPw = true;
+        if(this.chkPw == true){
+          this.password_true = this.password;
+        }
     },
-
+    chkEmailInput(){
+      if (!this.chkEmailForm.test(this.email)){
+        this.chkEmail = false;
+        this.emailformOpen = true;
+        this.emailOpen = false;
+        this.pwOpen = false;
+        this.pwformOpen = false;
+      }
+      else if(this.chkEmailForm.test(this.email)){
+        this.chkEmail = true;
+        this.email_true = this.email;
+      }
+    },
     chkOverlap(){
       this.chkEmail = true;
     },
