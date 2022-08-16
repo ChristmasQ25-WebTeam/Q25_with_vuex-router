@@ -27,7 +27,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ nickName }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -35,9 +35,9 @@
     </div>
 
     <div id="allBox">
-      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
-        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
-        {{i+1}}
+      <div :v-for="(boxImg,i) in userInfo.question" :key="i" @click="open_question">
+        <img :src="require(`${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        {{i+1}} 
       </div>
     </div>
     <button id="answer_group" @click="[togo_answerGrouping_page(), getQuestions()]">답변 모아보기</button>
@@ -348,7 +348,7 @@ export default {
     methods: {
     getQuestions() {
       axios
-      .get('http://localhost:3001/api/members/question/collection')
+      .get('http://localhost:5001/api/members/question/collection')
       .then(res => {
         qCollectionInfo = {
           qnaData: res.data.result,

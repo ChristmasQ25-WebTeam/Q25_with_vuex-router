@@ -62,7 +62,7 @@ export default new Vuex.Store({
       // 통신1. 로그인 -> 토큰 반환
       commit('loadingOn')
       axios
-      .post('http://localhost:5001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
+      .post('http://localhost:3001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
       .then(res => {
         // 성공 시 토큰(실제로는 user_id값을 받아옴)
         // 토큰을 헤더에 포함시켜서 유저 정보를 요청
@@ -86,9 +86,9 @@ export default new Vuex.Store({
           console.log(res)
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
-          commit('loadingOff')
+          commit('loadingOff')  
           router.push({name:'mainpage', params:{userIdx: userIdx}})
-        })
+        }) 
         .catch(err => {
           console.log(err)
           commit('loadingOff')
