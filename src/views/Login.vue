@@ -101,7 +101,6 @@
       <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
 
-
 <!-- 미니 : 회원가입 view-->
   <div v-if="signUp_page==true" id="signUp_page">
     <div class="modal">
