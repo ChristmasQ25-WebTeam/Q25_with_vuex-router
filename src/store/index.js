@@ -1,11 +1,12 @@
 import axios from 'axios'
 import Vue from 'vue'
-import Vuex, { Store } from 'vuex'
+import Vuex from 'vuex'
 import router from '../router/index.js'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  /* eslint-disable */
   state: {
     userInfo: null,
     isLogin: false,
@@ -18,6 +19,7 @@ export default new Vuex.Store({
       state.isLogin = true
       state.isError = false
       state.userInfo = payload
+      
     },
     // 이메일 또는 비번 실패했을 때,
     loginError(state) {

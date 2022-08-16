@@ -1,5 +1,5 @@
 // import img from './assets/06_gift01.png';
-
+/* eslint-disable */
 var question = [
       {
         qNum : '1',
@@ -97,11 +97,66 @@ var question = [
           opened : 0,
           answerY_N : 0
         },
+          {
+        qNum : '17',
+        boxImg : "06_gift17.png",
+        opened : 0,
+        answerY_N : 0
+      },
+      {
+        qNum : '18',
+        boxImg : "06_gift18.png",
+        opened : 0,
+        answerY_N : 0
+      },
+      {
+          qNum : '19',
+          boxImg : "06_gift19.png",
+          opened : 0,
+          answerY_N : 0
+        },
+        {
+          qNum : '20',
+          boxImg : "06_gift20.png",
+          opened : 0,
+          answerY_N : 0
+        },
+        {
+          qNum : '21',
+          boxImg : "06_gift21.png",
+          opened : 0,
+          answerY_N : 0
+        },
+        {
+            qNum : '22',
+            boxImg : "06_gift22.png",
+            opened : 0,
+            answerY_N : 0
+          },
+          {
+            qNum : '23',
+            boxImg : "06_gift23.png",
+            opened : 0,
+            answerY_N : 0
+          },
+          {
+            qNum : '24',
+            boxImg : "06_gift24.png",
+            opened : 0,
+            answerY_N : 0
+          },
+          {
+              qNum : '25',
+              boxImg : "06_gift25.png",
+              opened : 0,
+              answerY_N : 0
+            }
     
     
 
 
-    ]
+    
+  ]
 
 // var personalData = [
 //   {
@@ -205,9 +260,9 @@ var question = [
 //           answerY_N : 0
 //         },
 //     ]
-//     }
+    
     
 
 
-//     ]
+    
 export default question

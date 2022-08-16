@@ -20,7 +20,7 @@
           </div>
           <div class="ooops_line"></div>
         </div>
-        <button @click="ooops=false">확인</button>
+        <button @click="ooops_close">확인</button>
       </div>
     </div>
   </div>
@@ -31,7 +31,7 @@
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <p> 선물상자는 1번부터 열어주세요 :) </p>
+      <p> 선물상자는 해당일 자정에 오픈됩니다 :) </p>
     </div>
 
     <div id="allBox">
@@ -50,8 +50,11 @@
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
-      <!-- <img :src="require(`@/assets/${dayLoading.dayImg}`)" alt="image" id='dayImg'> -->
     </div>
+    <transition appear name="fade">
+        <img v-for='day in day이미지' :key="day" :src="require(`@/assets/${day.dayimg}`)" alt="image" id='dayImg'/>
+    </transition>
+    <div id="day_text">Day {{dayNum}} </div>
   </div>
 
 <!-- 리지 : 답변 모아보기 view -->
@@ -93,7 +96,7 @@
 <span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
 </div>
 
-<div class="qna_request_header_hr">
+<div class="qna_answer_header_hr">
 <hr>
 </div>
 
@@ -108,9 +111,9 @@
 
 <!--답변창 180글자까지만 작성 가능  -->
 <form id= "request_textarea" action="" method="POST">
-<textarea v-model="qna_request" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180"></textarea>
+<textarea v-model="qna_answer" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180"></textarea>
 <br/>
-<span id="counter">({{qna_request.length}}자 / 최대 180자)</span>
+<span id="counter">({{qna_answer.length}}자 / 최대 180자)</span>
 </form>
 
 <div class="requset_share">
@@ -252,14 +255,114 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
+          <h4 class="logout-btn">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
-          <h4 class="imgcredit-btn">이미지 크레딧 보기</h4>
+          <h4 class="imgcredit-btn" @click="togo_imgCredit_page">이미지 크레딧 보기</h4>
           <button @click="check">닫기</button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- 미니 : 이미지 크레딧 보기 -->
+  <div v-if="imgCredit_page==true" id="imgCredit_page">
+    <div class="content">
+      <div id="wrap1">
+        <i class="material-icons" @click="togo_Qlist_page">keyboard_arrow_left</i>
+      </div>
+      <div id="wrap2">
+        <h3>Image Credit</h3>
+        <p class="subtitle">해당 사이트에 사용된 모든 이미지들은 flaticon<br>( https://www.flaticon.com/ )에서<br>가져온 이미지들임을 밝힙니다.</p>
+        <div class="icon-link">
+          <a href="https://www.flaticon.com/free-icons/christmas" title="christmas icons">Christmas icons created by justicon - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <div> Icons made by <a href="https://www.flaticon.com/authors/maxim-basinski-premium" title="Maxim Basinski Premium"> Maxim Basinski Premium </a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com'</a></div>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Pixel Buddha - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Octopocto - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by monkik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Nikita Golubev - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift-card" title="gift card icons">Gift card icons created by juicy_fish - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Indielogy - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by surang - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Luvdat - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift-box" title="gift box icons">Gift box icons created by Luvdat - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/present" title="present icons">Present icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/present" title="present icons">Present icons created by QudaDesign - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift-box" title="gift box icons">Gift box icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift-box" title="gift box icons">Gift box icons created by DinosoftLabs - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Luvdat - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by smashingstocks - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by dhtgicon - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gift" title="gift icons">Gift icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/christmas" title="christmas icons">Christmas icons created by justicon - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/download" title="download icons">Download icons created by Uniconlabs - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/student" title="student stickers">Student stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/people" title="people stickers">People stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/statue-of-liberty" title="statue of liberty stickers">Statue of liberty stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/holidays" title="holidays stickers">Holidays stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/family" title="family stickers">Family stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/wow" title="wow stickers">Wow stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/music" title="music stickers">Music stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/birthday-and-party" title="birthday and party stickers">Birthday and party stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/activity" title="activity stickers">Activity stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/send" title="send stickers">Send stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/mental-health" title="mental health stickers">Mental health stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/people" title="people stickers">People stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/work" title="work stickers">Work stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/computer" title="computer stickers">Computer stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/yoga" title="yoga stickers">Yoga stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/cash" title="cash stickers">Cash stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/clock" title="clock stickers">Clock stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/sad" title="sad stickers">Sad stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/emotions" title="emotions stickers">Emotions stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-stickers/photography" title="photography stickers">Photography stickers created by Stickers - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Pixel perfect - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/wine-glasses" title="wine-glasses icons">Wine-glasses icons created by pojok d - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/crystal-ball" title="crystal ball icons">Crystal ball icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic-wand" title="magic wand icons">Magic wand icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/spark" title="spark icons">Spark icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by smalllikeart - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/gem" title="gem icons">Gem icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/tarot" title="tarot icons">Tarot icons created by Smashicons - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/spellbook" title="spellbook icons">Spellbook icons created by Ina Mella - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/potion" title="potion icons">Potion icons created by Ina Mella - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/open-book" title="open book icons">Open book icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by fjstudio - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/wand" title="wand icons">Wand icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Flat Icons - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/crystal-ball" title="crystal ball icons">Crystal ball icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/realism" title="realism icons">Realism icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/magic" title="magic icons">Magic icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/wizard" title="wizard icons">Wizard icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/crystal" title="crystal icons">Crystal icons created by Freepik - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/christmas" title="christmas icons">Christmas icons created by justicon - Flaticon</a>
+          <a href="https://www.flaticon.com/free-icons/christmas" title="christmas icons">Christmas icons created by iconixar - Flaticon</a>
+        </div>
+        <p class="confirm">confirm</p>
+        <img id="stamp_img" src="../assets/02_stamp.png" alt="스탬프" v-if="pwformOpen == false && pwOpen == false && emailOpen == false && nickOpen == false">
+      </div>
+    </div>
+
   </div>
 
  </div>
@@ -267,11 +370,12 @@
 
 <script>
 /* eslint-disable */
-import axios from 'axios'
 import question_25 from '../assets/question_25.js';
 import { mapState } from 'vuex'
+import axios from 'axios'
 import data from '../assets/test_data1.js';
-import data2 from '../assets/test_data2.js';
+// import data2 from '../assets/test_data2.js';
+
 
 export default {
     name: 'mainpage',
@@ -284,14 +388,15 @@ export default {
     data() {
         return{
             질문상자들 : data,
-            day이미지 : data2,
+            // day이미지 : data2,
             ooops : false,
             Q_list_page : true,
             Q_gather_page : false,
 
-            nickName : '',
+            nickName1 : 'abcd',
             opened : 1,
             answerY_N:0,
+            dayNum : 0,
 
 
             start_page : true,
@@ -304,8 +409,9 @@ export default {
             goodbye_finish_page : false,
             changePw_page : false,
             setting_page : false,
-            qna_request_page:false,
-            qna_request:[],
+            imgCredit_page : false,
+            qna_answer_page:false,
+            qna_answer:[],
             question_25_content:question_25,
             gift_select:0,
 
@@ -368,6 +474,7 @@ export default {
       this.Q_gather_page=false;
       this.changePw_page = false;
       this.goodbye_page = false;
+      this.imgCredit_page = false;
     },
     introBtnOn() {
       this.start_page=false;
@@ -405,16 +512,26 @@ export default {
       this.setting_page = false;
       this.changePw_page = true;
       this.goodbye_page = false;
+      this.imgCredit_page = false;
     },
     togo_goodbye_page(){
       this.Q_list_page = false;
       this.setting_page = false;
       this.changePw_page = false;
       this.goodbye_page = true;
+      this.imgCredit_page = false;
     },
     togo_setting_page(){
       this.Q_list_page = true;
       this.setting_page = true;
+      this.changePw_page = false;
+      this.goodbye_page = false;
+      this.imgCredit_page = false;
+    },
+    togo_imgCredit_page(){
+      this.Q_list_page = false;
+      this.setting_page = false;
+      this.imgCredit_page = true;
       this.changePw_page = false;
       this.goodbye_page = false;
     },
@@ -515,7 +632,7 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target.nextSibling)
+      // console.log(event.target.nextSibling)
       // const testqNum = event.target.nextSibling;
       // console.log(question.opened)
       // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
@@ -524,9 +641,15 @@ export default {
           this.ooops=true;
         }
         else if(this.opened==1){
+          this.dayNum = event.target.nextSibling;
+          console.log(this.dayNum);
           if(this.answerY_N==0){
             // this.loading_page=true;
-            this.qna_answer_page=true;
+            setTimeout(function(){
+              this.qna_answer_page=true;
+              this.loading_page=false;
+            }.bind(this),2000)
+            this.loading_page=true;
             this.Q_list_page=false;
           }
          else if(this.answerY_N==1){
@@ -541,10 +664,17 @@ export default {
       this.setting_page=true;
     },
     togo_write_answer() {
-      this.qna_request_page=true;
+      this.qna_answer_page=true;
       this.Q_list_page=false;
+    },
+    ooops_close(){
+      this.ooops=false;
+      this.Q_list_page=true;
+    },
+    submit() {
+      this.Q_list_page=true;
+      this.qna_answer_page=false;
     }
-
 
     }
 }
@@ -592,16 +722,38 @@ body {
 }
 
 /* 엘 */
-#Q_list_page #setting {
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+#Q_list_page #setting{
   position: absolute;
   width: 24px;
   top: 25px;
   right: 30px;
 }
-.day_img{
+#day_text {
+  font-size: 50px;
+  color: white;
+  margin-top: 30px;
+}
+#dayImg{
   width: 200px;
   height: 200px;
 }
+/* #dayImg-enter{
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+#dayImg-active{
+  transition: opacity 2s ease-in;
+}
+#dayImg-leave-active{
+  transition: opacity 2s ease-out;
+} */
 #ooopsBox_bg {
   /* 배경블러처리 블랙, 화이트 고민 */
   background-color: #00000091;
@@ -827,7 +979,6 @@ body {
   display: inline-block;
   text-align: justify;
   margin: 5px;
-  cursor: pointer;
 }
 
 .questionBox_line {
@@ -885,7 +1036,7 @@ display: none;
   font-size: 42px;
   font-weight: 800;
 }
-.qna_request_header_hr hr {
+.qna_answer_header_hr hr {
   background-color: rgb(215, 213, 213);
   border: 0;
   height: 0.8px;
@@ -931,7 +1082,7 @@ display: none;
 
 textarea:focus {outline: none;}
 textarea::placeholder {
-   color: #ccc;
+	color: #ccc;
   padding: 20px 5px;
 }
 
@@ -1142,12 +1293,36 @@ span {vertical-align: baseline;}
   background-color: #F4E7B6;
   font-family: 'NanumSquareRound';
 }
+#imgCredit_page #wrap2 {
+  position: relative;
+  width: 290px;
+  height: 564px;
+  padding: 16px;
+  border-radius: 5px;
+  background-color: #F4E7B6;
+  font-family: 'NanumSquareRound';
+}
 #wrap2 h3 {
   font-family: 'Sorts Mill Goudy', serif;
   font-weight: 500;
   font-size: 32px;
   border-bottom: 0.3px solid #000;
   padding: 10px;
+}
+#imgCredit_page #wrap2 h3 {
+  font-family: 'Sorts Mill Goudy', serif;
+  font-weight: 500;
+  font-size: 32px;
+  padding: 10px;
+  border-bottom: none
+}
+#imgCredit_page #wrap2 .subtitle {
+  font-family: 'NanumSquareRound';
+  font-weight: 800;
+  font-size: 12px;
+  padding: 10px 0 20px 0;
+  border-bottom: 0.3px solid #000;
+  text-align: center;
 }
 #goodbye_page #wrap2 h3 {
   font-family: 'Sorts Mill Goudy', serif;
@@ -1247,7 +1422,7 @@ span {vertical-align: baseline;}
   top: 57px;
   padding: 0 0 0 12px;
 }
-#wrap2 li .input-box p {
+#wrap2 li .input-box > p {
   font-size: 12px;
   font-weight: 800;
   padding: 13px 0 0 0;
@@ -1338,6 +1513,23 @@ span {vertical-align: baseline;}
   color: #fff;
 }
 
+.icon-link {
+  overflow: scroll;
+  font-family: 'NanumSquareRound';
+  font-size: 10px;
+  font-weight: 800;
+  height: 370px;
+  margin-top: 13px;
+  margin-bottom: 14px;
+}
+.icon-link a {
+  display: block;
+  color: #000;
+}
+/* #imgCredit_page #wrap2 .confirm {
+  position: fixed;
+  bottom: 20px;
+} */
 
 
 /* - 메인컬러
