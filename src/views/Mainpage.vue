@@ -27,7 +27,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ nickName1 }}</span>'s</div>
+      <div><span class="userName">{{ nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
@@ -46,7 +46,7 @@
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ nickName1 }}</span>'s</div>
+      <div><span class="userName">{{ nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>

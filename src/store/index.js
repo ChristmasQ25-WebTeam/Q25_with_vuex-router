@@ -45,46 +45,45 @@ export default new Vuex.Store({
   actions: {
     // 로그인 시도
     login({ commit }, loginObj) {
+      // 통신1. 로그인 -> 토큰 반환
       axios
       .post('http://localhost:5001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
       .then(res => {
         // 성공 시 토큰(실제로는 user_id값을 받아옴)
         // 토큰을 헤더에 포함시켜서 유저 정보를 요청
-        let token = res.data.result;
+        console.log(res.data)
+        let token = res.data.result.AT
+        let userIdx = res.data.result.userIdx
         let config = {
           headers: {
             'access-token': token
-          }
+          },
+          query: {'userIdx' : userIdx}
         }
-        axios
-        .get('http://localhost:5001/api/members/login', loginObj) // header 설정을 위해 config 선언, get 두번째 인자.
-        .then(res => {
-          // console.log(res.data)
-          let userInfo = {
-            userIdx : res.data.result.userIdx
-          }
-          console.log(res.data)
-          commit('loginSuccess',userInfo)
-          // 엘 -> 로그인 성공 후 메인페이지(질문리스트)에서 불러올 데이터
-          axios.get('http://localhost:5001/api/members/question', config)
+          axios
+          .get('http://localhost:5001/api/members/question', config.query) // header 설정을 위해 config 선언, get 두번째 인자.
           .then(res => {
-            console.log(res)
-          }) 
-
-
-          router.push({name:'mainpage'})
+            // 위 config에 토큰값이 잘 전달되었는지 콘솔로 찍어봄 => undefined로 나옴/ 
+            console.log(config.headers)
+            console.log(res.data)
+            userInfo = {
+            nickName : res.data.result.nickName,
+            stampImg : res.data.result.stampImg,
+            question : res.data.result.question
+          }
+          console.log(res)
+          commit('loginSuccess',userInfo)
+          router.push({name:'mainpage', query:{userIdx: userIdx}})
         })
-        .catch(() => {
-          commit('loginEmailError')
+        .catch(err => {
+          console.log(err)
+          commit('loginError')
         })
       })
       .catch(err => {
-        commit('loginEmailError')
+        console.log(err)
+        commit('loginError')
       })
-      
-              },
-    close({ state, commit }) {
-              commit('closeit')
     }
     }
   }

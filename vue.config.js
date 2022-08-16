@@ -1,13 +1,13 @@
 module.exports = {
-    proxy: {
-        '/api': {
-            target: 'http://localhost:5001/api',
-            changeOrigin: true,
-            pathRewrite: {
-                '^/api': ''
-            }
-        }
-    },
+    // proxy: {
+    //     '/api': {
+    //         target: 'http://localhost:5001/api',
+    //         changeOrigin: true,
+    //         pathRewrite: {
+    //             '^/api': ''
+    //         }
+    //     }
+    // },
 
     lintOnSave: false
 
