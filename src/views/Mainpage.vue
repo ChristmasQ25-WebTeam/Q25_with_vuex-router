@@ -74,7 +74,7 @@
           <div class="questionBox_line">
             <div class="questions">
             <span id="Q_inquestion">Q{{ item.qNum }}. &nbsp;</span>
-            <span>{{ item.qnacontent }}</span><br>
+            <span>{{ item.qnacontent }}</span><br><br>
             <span id="Q_inquestion">A. &nbsp;</span>
             <span>{{ item.answer }}</span>
             </div>
@@ -255,7 +255,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn">로그아웃</h4>
+          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn" @click="togo_imgCredit_page">이미지 크레딧 보기</h4>
