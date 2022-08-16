@@ -27,7 +27,7 @@
   <div v-if="Q_list_page==true" id="Q_list_page">
     <div class="title">
       <img id="setting" src="../assets/09_setting.png" alt="설정" @click="togo_setting_page">
-      <div><span class="userName">{{ userInfo.last_name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
