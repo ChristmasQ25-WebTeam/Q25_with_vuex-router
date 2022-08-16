@@ -35,8 +35,8 @@
     </div>
 
     <div id="allBox">
-      <div :v-for="(boxImg,i) in userInfo.question" :key="i" @click="open_question">
-        <img :src="require(`${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
+        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
         {{i+1}}
       </div>
     </div>
@@ -386,7 +386,7 @@ export default {
     data() {
         return{
             질문상자들 : data,
-            day이미지 : data2,
+            // day이미지 : data2,
             ooops : false,
             Q_list_page : true,
             Q_gather_page : false,
@@ -448,7 +448,7 @@ export default {
 
     getQuestions() {
       axios
-      .get('http://localhost:5001/api/members/question/collection')
+      .get('http://localhost:3001/api/members/question/collection')
       .then(res => {
         qCollectionInfo = {
           qnaData: res.data.result,

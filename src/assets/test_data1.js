@@ -1,5 +1,5 @@
 // import img from './assets/06_gift01.png';
-
+/* eslint-disable */
 var question = [
       {
         qNum : '1',
@@ -155,7 +155,8 @@ var question = [
     
 
 
-    ]
+    
+  ]
 
 // var personalData = [
 //   {
@@ -259,9 +260,9 @@ var question = [
 //           answerY_N : 0
 //         },
 //     ]
-//     }
+    
     
 
 
-//     ]
+    
 export default question
