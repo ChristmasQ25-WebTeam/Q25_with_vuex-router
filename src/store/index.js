@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
-import Vuex from 'vuex'
+import Vuex, { Store } from 'vuex'
 import router from '../router/index.js'
 
 Vue.use(Vuex)
@@ -8,44 +8,59 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     userInfo: null,
-    allUsers: [
-      { id: 1, name: 'lizy', email: 'lizy@gmail.com', password: 'a123456' },
-      { id: 2, name: 'lego', email: 'lego@gmail.com', password: 'a123456' }
-    ],
     isLogin: false,
-    isEmailError: false,
-    isPwError: false
+    isError: false,
+    isLoading: false
   },
   mutations: {
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
-      state.isEmailError = false
-      state.isPwError = false
+      state.isError = false
       state.userInfo = payload
       
     },
-    // 이메일 실패했을 때,
-    loginEmailError(state) {
+    // 이메일 또는 비번 실패했을 때,
+    loginError(state) {
       state.isLogin = false
-      state.isEmailError = true
-      state.isPwError = false
+      state.isError = true
     },
-    // 비번 실패했을 때,
-    loginPwError(state) {
-      state.isLogin = false
-      state.isEmailError = false
-      state.isPwError = true
-    },
+    // 모달창 닫기
     closeit(state) {
-      state.isEmailError = false
-      state.isPwError = false
+      state.isError = false
+    },
+    // 로그아웃
+    logout(state) {
+      state.isLogin = false
+      state.isError = false
+      state.userInfo = null
+      state.token = '';
+      localStorage.removeItem('login.accessToken')
+      
+      axios
+      .delete('http://localhost:3001/api/members/logout')
+    },
+    saveStateToStorage(state) {
+      localStorage.setItem('login.accessToken',state.token)
+    },
+    readStateFromStorage(state) {
+      if (localStorage.getItem('login.accessToken') != null) {
+        state.token = localStorage.getItem('login.accessToken')
+      }
+    },
+    loadingOn(state) {
+      state.isLoading = true
+    },
+    loadingOff(state) {
+      state.isLoading = false
     }
   },
   actions: {
+    
     // 로그인 시도
     login({ commit }, loginObj) {
       // 통신1. 로그인 -> 토큰 반환
+      commit('loadingOn')
       axios
       .post('http://localhost:5001/api/members/login', loginObj) // 두번째 인자에 파라메터(body) 값 넣을 수 있음
       .then(res => {
@@ -58,32 +73,44 @@ export default new Vuex.Store({
           headers: {
             'access-token': token
           },
-          query: {'userIdx' : userIdx}
+          params: {userIdx : userIdx}
         }
           axios
-          .get('http://localhost:5001/api/members/question', config.query) // header 설정을 위해 config 선언, get 두번째 인자.
+          .get('http://localhost:3001/api/members/question', config) // header 설정을 위해 config 선언, get 두번째 인자.
           .then(res => {
-            // 위 config에 토큰값이 잘 전달되었는지 콘솔로 찍어봄 => undefined로 나옴/ 
-            console.log(config.headers)
-            console.log(res.data)
-            userInfo = {
-            nickName : res.data.result.nickName,
-            stampImg : res.data.result.stampImg,
-            question : res.data.result.question
+            let userInfo = {
+            nickName: res.data.result.nickName,
+            stampImg: res.data.result.stampImg,
+            question: res.data.result.question
           }
           console.log(res)
           commit('loginSuccess',userInfo)
-          router.push({name:'mainpage', query:{userIdx: userIdx}})
+          commit('saveStateToStorage')
+          commit('loadingOff')
+          router.push({name:'mainpage', params:{userIdx: userIdx}})
         })
         .catch(err => {
           console.log(err)
+          commit('loadingOff')
           commit('loginError')
         })
       })
       .catch(err => {
         console.log(err)
+        commit('loadingOff')
         commit('loginError')
       })
+    },
+    close({ state, commit }) {
+      commit('closeit')
+    },
+    logout({commit}) {
+      commit('logout')
+      localStorage.removeItem('access_token')
+      router.push({name: 'home'})
+    },
+    doReadStateFromStorage({commit}) {
+      commit('readStateFromStorage')
     }
     }
   }
