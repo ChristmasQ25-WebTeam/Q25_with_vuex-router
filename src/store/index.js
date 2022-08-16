@@ -37,9 +37,6 @@ export default new Vuex.Store({
       state.userInfo = null
       state.token = '';
       localStorage.removeItem('login.accessToken')
-      
-      axios
-      .delete('http://localhost:3001/api/members/logout')
     },
     saveStateToStorage(state) {
       localStorage.setItem('login.accessToken',state.token)
@@ -107,8 +104,23 @@ export default new Vuex.Store({
     },
     logout({commit}) {
       commit('logout')
-      localStorage.removeItem('access_token')
+      // localStorage.removeItem('access_token')
       router.push({name: 'home'})
+
+      axios
+      .delete('http://localhost:3001/api/members/logout')
+      .then(response => {
+        // handle success
+        console.log(response);
+    })
+    .catch(error => {
+        // handle error
+        console.log(error);
+    })
+    .then(() => {
+        // always executed
+    });
+  
     },
     doReadStateFromStorage({commit}) {
       commit('readStateFromStorage')
