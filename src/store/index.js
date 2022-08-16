@@ -82,13 +82,23 @@ export default new Vuex.Store({
             let userInfo = {
             nickName: res.data.result.nickName,
             stampImg: res.data.result.stampImg,
-            question: res.data.result.question
+            question: res.data.result.question,
+            userIdx : userIdx
           }
           console.log(res)
+          let stampNumList=[];
+
+          for (let i=0; i<25; i++){
+            if(userInfo.question[i].answerY_N==1){
+              stampNumList.push(userInfo.question[i].qNum)
+            }
+          }
+          console.log('스탬프 붙일 상자번호 : '+ stampNumList+'/근데 이 리스트를 mainpage.vue로 옮겨야하는데 아직 못함')
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')  
-          router.push({name:'mainpage', params:{userIdx: userIdx}})
+          console.log(config)
+          router.push({name:'mainpage', config})
         }) 
         .catch(err => {
           console.log(err)

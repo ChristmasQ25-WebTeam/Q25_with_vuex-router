@@ -46,13 +46,14 @@
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
   <div v-if="loading_page==true" id="loading_page">
     <div class="title">
-      <div><span class="userName">{{ userInfo.name }}</span>'s</div>
+      <div><span class="userName">{{ userInfo.nickName }}</span>'s</div>
       <div>Christmas Q25</div>
       <div id="title_line"></div>
       <p>당신의 1년을 정리하는 25개의 질문</p>
     </div>
     <transition appear name="fade">
-        <img v-for='day in day이미지' :key="day" :src="`../assets/06_gift${dayNum}.png`" alt="image" id='dayImg'/>
+      <img v-if="dayNum<10" :src="require(`@/assets/11_day_op0${dayNum}.png`)" alt="image" id='dayImg'/>
+      <img v-else :src="require(`@/assets/11_day_op${dayNum}.png`)" alt="image" id='dayImg'/>
     </transition>
     <div id="day_text">Day {{dayNum}} </div>
   </div>
@@ -92,7 +93,7 @@
 
 <div class ="qna_requset_header">
 <i class="material-icons" @click="answerToQlist">keyboard_arrow_left</i>
-<span class="request_day_number">{{question_25_content[gift_select].question_day}}</span>
+<span class="request_day_number">day {{dayNum}}</span>
 </div>
 
 <div class="qna_answer_header_hr">
@@ -100,11 +101,12 @@
 </div>
 
 <div class="request_img_icon">
-<img src="../assets/08_question_pic01.png" alt="">
+  <img v-if="dayNum<10" :src="require(`@/assets/08_question_pic0${dayNum}.png`)" alt="">
+  <img v-else :src="require(`@/assets/08_question_pic${dayNum}.png`)" alt="">
 </div>
 
 <div class="request_question">
-  <span class = "question_number">{{question_25_content[gift_select].question_num}}</span>
+  <span class = "question_number">Q {{dayNum}}</span>
   <span class = "question_contents">{{question_25_content[gift_select].question}}</span>
 </div>
 
@@ -381,7 +383,7 @@ export default {
     //   boxImg : ''
     // }),
     computed: {
-        ...mapState(['userInfo'])
+        ...mapState(['userInfo', 'stampNumList'])
     },
     data() {
         return{
@@ -648,17 +650,32 @@ export default {
           this.ooops=true;
         }
         else if(this.opened==1){
-          this.dayNum = event.target.nextSibling.data;
+          this.dayNum = parseInt(event.target.nextSibling.data);
           console.log(this.dayNum);
 
           if(this.answerY_N==0){
             // this.loading_page=true;
+            
             setTimeout(function(){
               this.qna_answer_page=true;
               this.loading_page=false;
             }.bind(this),2000)
+            
             this.loading_page=true;
             this.Q_list_page=false;
+            
+            let config2 = {
+              userIdx : this.userInfo.userIdx,
+              qNum : parseInt(this.dayNum)
+            }
+            console.log(config2)
+            axios
+            .get('http://localhost:3001/api/members/qnapage', config2)
+            .then(res => {
+              console.log(res)
+            })
+
+            
           }
          else if(this.answerY_N==1){
             this.qna_answer_page=true;
