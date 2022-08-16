@@ -213,10 +213,12 @@ export default {
       chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
+
       emailformOpen: false,
 
       password_true:'',
       email_true:''
+
 
     }
   },
@@ -245,7 +247,6 @@ export default {
       this.pw_find_page = false;
       this.login_page=true;
     },
-
      async submit () {
       const userData = {
         nickName: this.nickName,

@@ -19,6 +19,7 @@ export default new Vuex.Store({
       state.isLogin = true
       state.isError = false
       state.userInfo = payload
+      
     },
     // 이메일 또는 비번 실패했을 때,
     loginError(state) {
@@ -86,9 +87,9 @@ export default new Vuex.Store({
           console.log(res)
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
-          commit('loadingOff')
+          commit('loadingOff')  
           router.push({name:'mainpage', params:{userIdx: userIdx}})
-        })
+        }) 
         .catch(err => {
           console.log(err)
           commit('loadingOff')
