@@ -35,8 +35,8 @@
     </div>
 
     <div id="allBox">
-      <div :v-for="(boxImg,i) in userInfo.question" :key="i" @click="open_question">
-        <img :src="require(`${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
+        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
         {{i+1}} 
       </div>
     </div>
@@ -52,7 +52,7 @@
       <p>당신의 1년을 정리하는 25개의 질문</p>
     </div>
     <transition appear name="fade">
-        <img v-for='day in day이미지' :key="day" :src="require(`@/assets/${day.dayimg}`)" alt="image" id='dayImg'/>
+        <img v-for='day in day이미지' :key="day" :src="`../assets/06_gift${dayNum}.png`" alt="image" id='dayImg'/>
     </transition>
     
     <div id="day_text">Day {{dayNum}} </div>
@@ -293,11 +293,13 @@ export default {
             ooops : false,
             Q_list_page : true,
             Q_gather_page : false,
+            loading_page : false,
 
             nickName1 : 'abcd',
             opened : 1,
             answerY_N:0,
             dayNum : 0,
+            dayImg : 0,
 
 
             start_page : true,
@@ -535,8 +537,9 @@ export default {
           this.ooops=true;
         }
         else if(this.opened==1){
-          this.dayNum = event.target.nextSibling;
+          this.dayNum = event.target.nextSibling.data;
           console.log(this.dayNum);
+
           if(this.answerY_N==0){
             // this.loading_page=true;
             setTimeout(function(){
