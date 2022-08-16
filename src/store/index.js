@@ -10,7 +10,7 @@ export default new Vuex.Store({
     userInfo: null,
     isLogin: false,
     isError: false,
-    isLoading: false
+    isLoading: false,
   },
   mutations: {
     // 로그인이 성공했을 때,
@@ -86,7 +86,7 @@ export default new Vuex.Store({
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
-          router.push({name:'mainpage', params:{userIdx: userIdx}})
+          router.push({name:'mainpage', config})
         })
         .catch(err => {
           console.log(err)

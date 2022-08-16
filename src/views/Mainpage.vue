@@ -40,7 +40,7 @@
         {{i+1}}
       </div>
     </div>
-    <button id="answer_group" @click="[togo_answerGrouping_page(), getQuestions()]">답변 모아보기</button>
+    <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
   </div>
 
 <!-- 엘 : 답변없는 상자 클릭시 보여지는 로딩화면 -->
@@ -59,21 +59,21 @@
       <button @click="togo_Qlist_page" id="backBtn">&lt;</button>
       <br><br>
       <div class="title">
-          <div><span class="userName">{{ qCollectionInfo.nickName }}</span>'s</div>
+          <div><span class="userName">{{ nickName }}</span>'s</div>
           <div>Christmas Q25</div>
           <p>- 당신의 1년을 정리하는 25개의 질문 -</p>
           <div id="title_line"></div>
       </div>
 
     <div id="contentsBox">
-      <div :v-for="(qCollectionInfo,i) in questions" :key="i">
+      <div v-for="item in question" :key="item">
         <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{qCollectionInfo.qNum}}. &nbsp;</span>
-            <span>{{qCollectionInfo.qnacontent}}</span><br>
+            <span id="Q_inquestion">Q{{ item.qNum }}. &nbsp;</span>
+            <span>{{ item.qnacontent }}</span><br>
             <span id="Q_inquestion">A. &nbsp;</span>
-            <span>{{qCollectionInfo.answer}}</span>
+            <span>{{ item.answer }}</span>
             </div>
             <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
@@ -269,11 +269,12 @@
 /* eslint-disable */
 import axios from 'axios'
 import question_25 from '../assets/question_25.js';
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 import data from '../assets/test_data1.js';
 import data2 from '../assets/test_data2.js';
 
 export default {
+    name: 'mainpage',
     // data : () => ({
     //   boxImg : ''
     // }),
@@ -282,7 +283,6 @@ export default {
     },
     data() {
         return{
-            qCollectionInfo : {},
             질문상자들 : data,
             day이미지 : data2,
             ooops : false,
@@ -310,7 +310,7 @@ export default {
             gift_select:0,
 
             email : '',
-            nickName : '',
+            // nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
             ClickButton : false,
             nickOpen: false,
@@ -341,33 +341,27 @@ export default {
         }
     },
     methods: {
-    getQuestions() {
-      axios
-      .get('http://localhost:3001/api/members/question/collection')
-      .then(res => {
-        qCollectionInfo = {
-          qnaData: res.data.result,
-          nickName: res.data.result.nickName,
-          questions: res.data.result.question,
-          qNum: res.data.result.question.qNum,
-          qnacontent: res.data.result.question.qnacontent,
-          answer: res.data.result.question.answer
-        }
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-
-    },
-
     goto_QnApage() {
       this.Q_gather_page=false;
       this.qna_answer_page=true;
     },
     togo_answerGrouping_page(){
-      this.Q_list_page=false;
-      this.Q_gather_page=true;
+      axios
+      .get('http://localhost:3001/api/members/question/collection')
+      .then(res => {
+        this.nickName = res.data.result.nickName
+        this.question = res.data.result.question
+        this.qNum = res.data.result.question.qNum
+        this.qnacontent = res.data.result.question.qnacontent
+        this.answer = res.data.result.question.answer
+        console.log(res);
+        this.Q_list_page=false;
+        this.Q_gather_page=true;
+      })
+      .catch(err => {
+        console.log(err);
+      })
+
     },
     togo_Qlist_page(){
       this.Q_list_page=true;
