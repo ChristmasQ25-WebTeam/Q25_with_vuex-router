@@ -35,8 +35,9 @@
     </div>
 
     <div id="allBox">
+      <!-- <div class="stamp_sticker"></div> -->
       <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
-        <img :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
         {{i+1}}
       </div>
     </div>
@@ -113,7 +114,7 @@
 
 <!--답변창 180글자까지만 작성 가능  -->
 <form id= "request_textarea" action="" method="POST">
-<textarea v-model="qna_answer" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180"></textarea>
+<textarea v-model="a" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180" id="answer"> </textarea>
 <br/>
 <span id="counter">({{qna_answer.length}}자 / 최대 180자)</span>
 </form>
@@ -257,7 +258,7 @@
     <div class="modal">
       <div class="modal_background">
         <div class="modal_box">
-          <h4 class="logout-btn" @click="$store.dispatch('logout')">로그아웃</h4>
+          <h4 class="logout-btn" @click="logout_">로그아웃</h4>
           <h4 class="changepw-btn" @click="togo_changePw_page">비밀번호 변경</h4>
           <h4 class="goodbye-btn" @click="togo_goodbye_page">회원 탈퇴</h4>
           <h4 class="imgcredit-btn" @click="togo_imgCredit_page">이미지 크레딧 보기</h4>
@@ -386,7 +387,7 @@ export default {
     //   boxImg : ''
     // }),
     computed: {
-        ...mapState(['userInfo', 'stampNumList'])
+        ...mapState(['userInfo', 'token'])
     },
     data() {
         return{
@@ -404,6 +405,7 @@ export default {
             dayImg : 0,
       
             q : '',
+            a : '',
 
 
             start_page : true,
@@ -454,6 +456,14 @@ export default {
         }
     },
     methods: {
+      logout_(){
+        axios
+        .delete('http://localhost:3001/api/members/logout', {data: {userIdx : this.userInfo.userIdx}})
+        .then(response => {
+          // handle success
+          console.log(response);
+    })
+      },
     goto_QnApage() {
       this.Q_gather_page=false;
       this.qna_answer_page=true;
@@ -661,16 +671,37 @@ export default {
     },
 
     open_question(event) {
-      // console.log(event.target.nextSibling)
-      // const testqNum = event.target.nextSibling;
-      // console.log(question.opened)
-      // 오픈안되었으면 ooops페이지, 오픈된거면 답변여부 검사 -> 답없으면 로딩페이지로, 답있으면 답변페이지로
-      // while(question.qNum==testqNum){
+      this.dayNum = parseInt(event.target.nextSibling.data);
+      this.opened = this.userInfo.question[this.dayNum-1].opened;
+      this.answerY_N = this.userInfo.question[this.dayNum-1].answerY_N
+      
+      console.log(this.userInfo.question[this.dayNum-1])
+      console.log("opened : " + this.opened, 'answerY_N : '+this.answerY_N)
+
+      let config2 = {
+        // 헤더에 토큰값 넘겨줘야하는데 null로 뜸
+              headers : {
+                'access-token': this.token
+              }, 
+              params: { 
+                userIdx : this.userInfo.userIdx,
+                qNum : parseInt(this.dayNum) 
+              }
+            }
+            console.log(this.token)
+            axios
+            .get('http://localhost:3001/api/members/qnapage', config2)
+            .then(res => {
+              console.log(res.data)
+              this.q= res.data.result.qnacontent
+              this.a= res.data.result.answer
+            })
+
         if(this.opened==0){
           this.ooops=true;
         }
         else if(this.opened==1){
-          this.dayNum = parseInt(event.target.nextSibling.data);
+          // this.dayNum = parseInt(event.target.nextSibling.data);
           console.log(this.dayNum);
 
           if(this.answerY_N==0){
@@ -684,21 +715,7 @@ export default {
             this.loading_page=true;
             this.Q_list_page=false;
             
-            let config2 = {
-              // headers: {
-              // 'access-token': token
-              // },
-              params: { 
-                userIdx : this.userInfo.userIdx,
-                qNum : parseInt(this.dayNum)
-              }
-            }
-            console.log(config2)
-            axios
-            .get('http://localhost:3001/api/members/qnapage', config2)
-            .then(res => {
-              this.q= res.data.result.qnacontent
-            })
+            
 
             
           }
@@ -724,6 +741,17 @@ export default {
     submit() {
       this.Q_list_page=true;
       this.qna_answer_page=false;
+      axios
+      .patch('http://localhost:3001/api/members/useranswer',{
+        
+          answer : this.a,
+          userIdx : this.userInfo.userIdx,
+          qNum : this.dayNum
+        
+      })
+      .then(res => {
+        console.log(res.data)
+      })
     }
 
     }
@@ -772,6 +800,18 @@ body {
 }
 
 /* 엘 */
+#answer {
+  padding: 15px;
+  font-size: 16px;
+}
+
+.stamp_sticker {
+  width: 100px;
+  height: 100px;
+  background-image: url('../assets/02_stamp.png');
+  background-size: cover;
+  position: fixed;
+}
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1.5s;
 }
@@ -1594,4 +1634,8 @@ span {vertical-align: baseline;}
     - white : FFFFFF
     - black : 000000
     - gray : D9D9D9 */
+
+.material-icons {
+  cursor: pointer;
+}
 </style>
