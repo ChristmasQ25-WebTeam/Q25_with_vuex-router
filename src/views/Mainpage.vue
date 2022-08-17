@@ -108,7 +108,7 @@
 
 <div class="request_question">
   <span class = "question_number">Q {{dayNum}}</span>
-  <span class = "question_contents">{{question_25_content[gift_select].question}}</span>
+  <span class = "question_contents">{{q}}</span>
 </div>
 
 <!--답변창 180글자까지만 작성 가능  -->
@@ -397,11 +397,13 @@ export default {
             Q_gather_page : false,
             loading_page : false,
 
-            nickName1 : 'abcd',
+            // nickName1 : 'abcd',
             opened : 1,
             answerY_N:0,
             dayNum : 0,
             dayImg : 0,
+      
+            q : '',
 
 
             start_page : true,
@@ -421,7 +423,7 @@ export default {
             gift_select:0,
 
             email : '',
-            // nickName : '',
+            nickName : '',
             질문데이터 : '부여된 랜덤 질문 리스트 데이터',
             ClickButton : false,
             nickOpen: false,
@@ -683,14 +685,19 @@ export default {
             this.Q_list_page=false;
             
             let config2 = {
-              userIdx : this.userInfo.userIdx,
-              qNum : parseInt(this.dayNum)
+              // headers: {
+              // 'access-token': token
+              // },
+              params: { 
+                userIdx : this.userInfo.userIdx,
+                qNum : parseInt(this.dayNum)
+              }
             }
             console.log(config2)
             axios
             .get('http://localhost:3001/api/members/qnapage', config2)
             .then(res => {
-              console.log(res)
+              this.q= res.data.result.qnacontent
             })
 
             
