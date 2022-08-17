@@ -90,7 +90,6 @@
     <div>
       <input
         type="email"
-        :state="emailValidation"
         placeholder="이메일을 입력해주세요"
         v-model="email"
         id="email_inputBox2"
@@ -99,7 +98,7 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="pwfind({email})">완료</button>
+      <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
 
 
@@ -190,7 +189,6 @@
 </template>
 <script>
 /* eslint-disable */
-import { ok } from 'assert';
 import { mapState, mapActions } from 'vuex'
 export default {
   data() {
@@ -221,14 +219,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isError', 'isLoading','isEmail','isEmailError']),
-       emailValidation() {
-        let re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-        return re.test(this.userItems.id);
-    }
-},
+    ...mapState(['isLogin', 'isError', 'isLoading'])
+  },
   methods: {
-    ...mapActions(['login','close','pwfind']),
+    ...mapActions(['login','close']),
 
     signUpBtnOn(){
       this.login_page=false;
