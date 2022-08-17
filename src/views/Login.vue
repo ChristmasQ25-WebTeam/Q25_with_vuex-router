@@ -801,6 +801,7 @@ span {vertical-align: baseline;}
   color: #fff;
   font-size: 42px;
   font-weight: 800;
+  cursor: pointer;
 }
 #wrap1 span {
   position: absolute;
@@ -813,6 +814,7 @@ span {vertical-align: baseline;}
   font-weight: 800;
   font-family: 'NanumSquareRound';
   padding: 0 0 26px 0;
+  cursor: pointer;
 }
 
 #wrap2 {

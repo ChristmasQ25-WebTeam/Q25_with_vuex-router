@@ -378,6 +378,7 @@ import axios from 'axios'
 import data from '../assets/test_data1.js';
 // import data2 from '../assets/test_data2.js';
 import { changePw } from '../api/changepw';
+import { withdraw } from '../api/withdraw';
 
 
 export default {
@@ -557,10 +558,23 @@ export default {
     },
 
 
-    bye_submit(e){
-      e.preventDefault();
-      // api 받아와서 수정해야함
-      if(this.bye_email == ''){
+    async bye_submit(){
+      const withdrawData = {
+        email: this.email,
+        password: this.password
+      }
+      const { data } = await withdraw(withdrawData);
+      console.log(data);
+      // 수정 필요
+      if(data.code == 3003){
+        this.byeemailOpen = true;
+        this.byepwOpen = false;
+      }
+      else if(data.code == 3004){
+        this.byeemailOpen = true;
+        this.byepwOpen = false;
+      }
+      else if(this.bye_email == ''){
         this.byeemailOpen = true;
         this.byepwOpen = false;
       }
@@ -1284,6 +1298,7 @@ span {vertical-align: baseline;}
   font-size: 16px;
   font-weight: 800;
   font-family: 'NanumSquareRound';
+  cursor: pointer;
 }
 .modal_background .modal_box button {
   padding: 16px 0 0 0;
