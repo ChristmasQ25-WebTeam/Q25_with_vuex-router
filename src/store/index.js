@@ -12,13 +12,11 @@ export default new Vuex.Store({
     isLogin: false,
     isError: false,
     isLoading: false,
-    isEmail:false,
-    isEmailError:false,
   },
   mutations: {
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
-      state.F = true
+      state.isLogin = true
       state.isError = false
       state.userInfo = payload
       
@@ -40,19 +38,6 @@ export default new Vuex.Store({
       state.token = '';
       localStorage.removeItem('login.accessToken')
     },
-
-    //비밀번호 찾기 (이메일 존재)
-    isPwEmail(state){
-      state.isEmail=true,
-      state.isEmailError=false
-    },
-    
-    //비밀번호 찾기 (이메일 존재X)
-    noPwEmail(state){
-      state.isEmail=false,
-      state.isEmailError=true
-    },
-
     saveStateToStorage(state) {
       localStorage.setItem('login.accessToken',state.token)
     },
@@ -148,40 +133,7 @@ export default new Vuex.Store({
     },
     doReadStateFromStorage({commit}) {
       commit('readStateFromStorage')
-    },
- 
-     }
+    }
+    }
   }
 )
-pwfind({ commit }){ //비밀번호 찾기 
-    //유효한 이메일 검사 (여기에 넣는게 맞을지?) 일단 login창에도 다른방식으로 구현
-    /*emailValidation = (key) => (e) => {
-      if (key === 'email') {
-        let emailreg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-        let email = e.target.value;
-        if (email.length > 0 && false === emailreg.test(email)) {
-          console.log('올바른 이메일 형식이 아닙니다')
-        }else
-    */ 
-axios({
-  method: 'post',
-  url: 'http://localhost:3001/api/members/pw',
-  data: {
-   email
-  },
-})
-//DB에 동일 데이터가 존재한다면 (이메일을 보내는 경우)
-  .then((res) => {
-    //status code: 1000
-    if (res.data !== null) { //DB의 데이터가 담겨서 오는 것은 res.data이다. 
-      console.log(res);
-      commit('isPwEmail')
-    } 
-  })
-  //이메일이 없는 경우
-  .catch((err) => {
-    //status code: 2015
-    console.log(err);
-    commit('NoPwEmail')
-  })
-}
