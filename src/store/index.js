@@ -13,14 +13,23 @@ export default new Vuex.Store({
     isLogin: false,
     isError: false,
     isLoading: false,
+    stampNumList: null,
   },
   mutations: {
+    // 스탬프붙일 상자번호 불러오기
+    stampNum(state, payload){
+      state.stampNumList = payload
+    },
+    // 토큰값 가져가기
+    getTokentoMain(state, payload){
+      state.token = payload
+    },
+
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
       state.isError = false
       state.userInfo = payload
-      
     },
     // 이메일 또는 비번 실패했을 때,
     loginError(state) {
@@ -95,6 +104,8 @@ export default new Vuex.Store({
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
+          commit('getTokentoMain', token)
+          commit('stampNum', stampNumList)
           router.push({name:'mainpage', config})
         })
         .catch(err => {
@@ -115,7 +126,7 @@ export default new Vuex.Store({
     logout({commit}) {
       commit('logout')
       // localStorage.removeItem('access_token')
-      router.push({name: 'home'})
+      // router.push({name: 'home'})
 
     //   axios
     //   .delete('http://localhost:3001/api/members/logout', {data: {userIdx : userInfo.userIdx}})

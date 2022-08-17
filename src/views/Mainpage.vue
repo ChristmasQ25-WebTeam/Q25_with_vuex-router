@@ -12,6 +12,7 @@
             아직 질문이 오픈되지 않았어요!
             <br>
             질문은 해당일 자정에 오픈됩니다.
+            {{stampNumList}}
             <br>
             조금만 기다려주세요:)
           </div>
@@ -37,7 +38,7 @@
     <div id="allBox">
       <!-- <div class="stamp_sticker"></div> -->
       <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
-        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :v-if="sticker">
+        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :class="{stamp_sticker:dayNum in stampNumList}">
         {{i+1}}
       </div>
     </div>
@@ -387,7 +388,7 @@ export default {
     //   boxImg : ''
     // }),
     computed: {
-        ...mapState(['userInfo', 'token'])
+        ...mapState(['userInfo', 'token', 'stampNumList'])
     },
     data() {
         return{
@@ -462,6 +463,7 @@ export default {
         .then(response => {
           // handle success
           console.log(response);
+          this.$router.push({name: 'home'})
     })
       },
     goto_QnApage() {
@@ -689,6 +691,7 @@ export default {
               }
             }
             console.log(this.token)
+            console.log(config2)
             axios
             .get('http://localhost:3001/api/members/qnapage', config2)
             .then(res => {
