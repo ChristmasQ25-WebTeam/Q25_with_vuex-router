@@ -101,6 +101,7 @@
       <button class="jm_finish-btn" @click="login({email})">완료</button>
 </div>
 
+
 <!-- 미니 : 회원가입 view-->
   <div v-if="signUp_page==true" id="signUp_page">
     <div class="modal">
@@ -122,12 +123,13 @@
           <button @click="check">확인</button>
         </div>
       </div>
-      <div class="modal_background check-email" v-if="emailOpen == true">
+      <!-- api 연동 후 사용할 것 -->
+      <!-- <div class="modal_background check-email" v-if="emailOpen == true">
         <div class="modal_box">
           <h4>이미 등록된 이메일입니다</h4>
           <button @click="check">확인</button>
         </div>
-      </div>
+      </div> -->
       <div class="modal_background check-nickname" v-if="nickOpen == true">
         <div class="modal_box">
           <h4>닉네임을 입력해주세요</h4>
@@ -157,7 +159,7 @@
               <span>이메일을 입력해주세요!</span>
             </div>
             <div class="input-box email-input">
-              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!" @change="chkEmailInput()">
+              <input type="email" class="inputText" v-model="email" placeholder="이메일을 입력해주세요!">
               <br>
               <!-- <button class="overlap-btn" @click="chkOverlap">중복확인</button>
               <img src="../src/assets/05_check.png" alt="중복확인" v-if="chkEmail == true"> -->
@@ -188,7 +190,6 @@
 <script>
 /* eslint-disable */
 import { mapState, mapActions } from 'vuex'
-import { registerUser } from '../api/index';
 export default {
   data() {
     return {
@@ -213,12 +214,7 @@ export default {
       chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
-
-      emailformOpen: false,
-
-      password_true:'',
-      email_true:''
-
+      emailformOpen: false
 
     }
   },
@@ -247,56 +243,37 @@ export default {
       this.pw_find_page = false;
       this.login_page=true;
     },
-     async submit () {
-      const userData = {
-        nickName: this.nickName,
-        email: this.email_true,
-        password: this.password_true
-      }
-      const { data } = await registerUser(userData);
-      console.log(data);
+
+    submit (e) {
+      e.preventDefault();
       if (this.nickName == ''){
         this.nickOpen = true;
         this.emailformOpen = false;
-        this.emailOpen = false;
+        // this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
       }
-      else if (this.email == '' || this.chkEmail == false){
+      else if (!this.chkEmailForm.test(this.email)){
         this.emailformOpen = true;
-        this.emailOpen = false;
         this.pwOpen = false;
         this.pwformOpen = false;
-        // this.email_true = this.email;
       }
-      // else if (!this.chkEmailForm.test(this.email)){
-      //   this.emailformOpen = true;
-      //   this.emailOpen = false;
+      // else if (this.chkEmail == false){
+      //   this.emailOpen = true;
       //   this.pwOpen = false;
       //   this.pwformOpen = false;
-      //   // this.email_true = this.email;
       // }
       else if (this.password == ''){
-        this.email_true = this.email;
-        // console.log("형식 테스트 후", "검증 전", this.email, "검증 후", this.email_true);
         this.pwOpen = true;
         this.pwformOpen = false;
       }
       else if (this.chkPw == false){
-        this.email_true = this.email;
         this.pwformOpen = true;
       }
       else {
-        this.email_true = this.email;
-        this.initForm();
         this.login_page=true;
         this.signUp_page=false;
       }
-    },
-    initForm() {
-      this.nickName = '';
-      this.password = '';
-      this.email = '';
     },
 
     check () {
@@ -324,23 +301,8 @@ export default {
       }
       if(this.password.length > 5 && this.chkNum.test(this.password) && this.chkEng.test(this.password))
         this.chkPw = true;
-        if(this.chkPw == true){
-          this.password_true = this.password;
-        }
     },
-    chkEmailInput(){
-      if (!this.chkEmailForm.test(this.email)){
-        this.chkEmail = false;
-        this.emailformOpen = true;
-        this.emailOpen = false;
-        this.pwOpen = false;
-        this.pwformOpen = false;
-      }
-      else if(this.chkEmailForm.test(this.email)){
-        this.chkEmail = true;
-        this.email_true = this.email;
-      }
-    },
+
     chkOverlap(){
       this.chkEmail = true;
     },

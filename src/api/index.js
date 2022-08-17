@@ -7,11 +7,3 @@ function registerUser(userData){
 }
 
 export { registerUser };
-
-function logout(Idx){
-  const url = 'http://localhost:3001/api/members/logout';
-  let i = {userIdx :  1}
-  return axios.delete(url, i);
-}
-
-export { logout };
