@@ -1,5 +1,5 @@
 // import img from './assets/06_gift01.png';
-/* eslint-disable */
+// /* eslint-disable */
 var question = [
       {
         qNum : '1',

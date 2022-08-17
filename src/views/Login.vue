@@ -258,6 +258,11 @@ export default {
         this.pwOpen = false;
         this.pwformOpen = false;
       }
+      else if (data.code == 3001){
+        this.emailOpen = true;
+        this.pwOpen = false;
+        this.pwformOpen = false;
+      }
       // else if (this.chkEmail == false){
       //   this.emailOpen = true;
       //   this.pwOpen = false;
