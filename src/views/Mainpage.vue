@@ -37,10 +37,13 @@
 
     <div id="allBox">
       <!-- <div class="stamp_sticker"></div> -->
-      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question" style="position : relative">
-        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' >
-          {{i+1}}
-          <!-- <div v-if="i in stampNumList" style="position:absolute;"> <img src="../assets/03_gift_opened_sticker.png" style="width:50px"></div> -->
+      <div v-for="i in 25" :key="i" @click="open_question" style="position : relative">
+        <img v-if="i<10" :src="require(`@/assets/06_gift0${i}.png`)" alt="image" id='giftbox' >
+        <img v-else :src="require(`@/assets/06_gift${i}.png`)" alt="image" id='giftbox' >
+          {{i}}
+            <div  style="position:absolute;">
+              <img v-if="userInfo.question[i-1].answerY_N" src="../assets/03_gift_opened_sticker.png" style="width:50px">
+            </div>
         
       </div>
     </div>
@@ -382,6 +385,7 @@ import axios from 'axios'
 import data from '../assets/test_data1.js';
 // import data2 from '../assets/test_data2.js';
 import { changePw } from '../api/changepw';
+import question from '../assets/test_data1.js';
 
 
 export default {
@@ -1110,10 +1114,9 @@ body {
 }
 
 #stampimg2 {
-  width: 53px;
-  height: 59px;
+  width: 50px;
   float: right;
-  bottom: 10px;
+  /* bottom: 20px; */
 }
 
 ::-webkit-scrollbar {
