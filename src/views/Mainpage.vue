@@ -756,7 +756,7 @@ export default {
       })
       .then(res => {
         this.answerY_N = res.data.result.answerY_N;
-        this.$router.push('/main');
+        // this.$router.push('/main');
           // this.stampNumList.push(res.data.result.qNum)
         
         // console.log(this.stampNumList)
