@@ -14,6 +14,7 @@ export default new Vuex.Store({
     isError: false,
     isLoading: false,
     stampNumList: null,
+    config: null,
   },
   mutations: {
     // 스탬프붙일 상자번호 불러오기
@@ -23,6 +24,10 @@ export default new Vuex.Store({
     // 토큰값 가져가기
     getTokentoMain(state, payload){
       state.token = payload
+    },
+    //config 값 가져가기
+    getConfigtoMain(state,payload){
+      state.config=payload
     },
 
     // 로그인이 성공했을 때,
@@ -92,7 +97,6 @@ export default new Vuex.Store({
             question: res.data.result.question,
             userIdx : userIdx
           }
-          console.log(res)
           let stampNumList=[];
 
           for (let i=0; i<25; i++){
@@ -100,12 +104,15 @@ export default new Vuex.Store({
               stampNumList.push(userInfo.question[i].qNum)
             }
           }
-          console.log('스탬프 붙일 상자번호 : '+ stampNumList+'/근데 이 리스트를 mainpage.vue로 옮겨야하는데 아직 못함')
+          console.log('답변 있는 상자 : '+ stampNumList)
+          
+
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
           commit('getTokentoMain', token)
           commit('stampNum', stampNumList)
+          commit('getConfigtoMain', config)
           router.push({name:'mainpage', config})
         })
         .catch(err => {
