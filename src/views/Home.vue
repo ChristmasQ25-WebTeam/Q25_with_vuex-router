@@ -8,7 +8,7 @@
         <div><button type="button" @click="introBtnOn" class="btn">소개</button></div>
         <div><button type="button" @click="gotoLogin()" class="btn" id="startBtn">시작하기</button></div>
         <router-view></router-view>
-        <div id="teamname">teamname</div>
+        <div id="teamname">team RUDOLF</div>
       </div>
   </div>
 
@@ -23,7 +23,7 @@
         <p>Christmas Q25가<br>1년동안의 소중했던 추억,<br>행복했던 기억,<br>고마웠던 사람을 떠올리게 하는<br>
             따뜻한 매개체가 되길 바라며</p><br>
         <p>모든 사용자분들의 행복한 연말을 기원합니다.</p><br>
-        <div id="fromteam">team name<span><img src="../assets/02_stamp.png" id="stampimg">&nbsp;올림&nbsp;&nbsp;</span></div>
+        <div id="fromteam">team RUDOLF<span><img src="../assets/02_stamp.png" id="stampimg">&nbsp;올림&nbsp;&nbsp;</span></div>
       </div>
       <div><button @click="introBtnOff" type="button" class="btn" id="closeBtn">닫기</button></div>
     </div>
@@ -137,7 +137,9 @@ body {
 }
 
 #teamname {
-  color: white;
+  color: rgba(255, 255, 255, 0.666);
+  font-size: 16px;
+  font-weight: 700;
   /* teamname을 맨 아래 고정시키는건 위에 있는 요소에 margin bottom 해서 하기. teamname에 마진탑 주면 로그인페이지에서 teamname이 아래로 밀림 */
 }
 

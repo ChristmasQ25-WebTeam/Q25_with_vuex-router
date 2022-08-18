@@ -37,9 +37,11 @@
 
     <div id="allBox">
       <!-- <div class="stamp_sticker"></div> -->
-      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question">
-        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' :class="{stamp_sticker:dayNum in stampNumList}">
-        {{i+1}}
+      <div v-for="(question,i) in 질문상자들" :key="i" @click="open_question" style="position : relative">
+        <img  :src="require(`@/assets/${question.boxImg}`)" alt="image" id='giftbox' >
+          {{i+1}}
+          <!-- <div v-if="i in stampNumList" style="position:absolute;"> <img src="../assets/03_gift_opened_sticker.png" style="width:50px"></div> -->
+        
       </div>
     </div>
     <button id="answer_group" @click="togo_answerGrouping_page">답변 모아보기</button>
@@ -251,7 +253,7 @@
     <img src="../assets/01_wreath.png">
     <span>탈퇴가 완료되었습니다<br>이용해주셔서 감사했어요 :)<br>행복한 연말 보내세요!</span>
     <button class="togo_home" @click="togo_home">홈으로</button>
-    <div class="teamname">teamname</div>
+    <div class="teamname">team RUDOLF</div>
   </div>
 
   <!-- 미니 : 설정 view -->
@@ -404,11 +406,10 @@ export default {
             answerY_N:0,
             dayNum : 0,
             dayImg : 0,
+            showStamp:false,
       
             q : '',
             a : '',
-
-
             start_page : true,
             introduction_page : false,
             pw_find_page : false,
@@ -467,12 +468,13 @@ export default {
     })
       },
     goto_QnApage() {
+
       this.Q_gather_page=false;
       this.qna_answer_page=true;
     },
     togo_answerGrouping_page(){
       axios
-      .get('http://localhost:3001/api/members/question/collection')
+      .get('http://localhost:3001/api/members/question/collection',{params: {userIdx : this.userInfo.userIdx}})
       .then(res => {
         this.nickName = res.data.result.nickName
         this.question = res.data.result.question
@@ -673,6 +675,7 @@ export default {
     },
 
     open_question(event) {
+      console.log(event.target)
       this.dayNum = parseInt(event.target.nextSibling.data);
       this.opened = this.userInfo.question[this.dayNum-1].opened;
       this.answerY_N = this.userInfo.question[this.dayNum-1].answerY_N
@@ -681,7 +684,6 @@ export default {
       console.log("opened : " + this.opened, 'answerY_N : '+this.answerY_N)
 
       let config2 = {
-        // 헤더에 토큰값 넘겨줘야하는데 null로 뜸
               headers : {
                 'access-token': this.token
               }, 
@@ -753,7 +755,12 @@ export default {
         
       })
       .then(res => {
-        console.log(res.data)
+        this.answerY_N = res.data.result.answerY_N;
+        this.$router.push('/main');
+          // this.stampNumList.push(res.data.result.qNum)
+        
+        // console.log(this.stampNumList)
+        // console.log(res.data.result.qNum)
       })
     }
 
@@ -1046,6 +1053,7 @@ body {
   width: 360px;
   height: 440px;
   overflow: auto;
+  
 }
 
 #backBtn {
@@ -1062,6 +1070,7 @@ body {
 }
 
 .questionBox {
+  cursor: pointer;
   width: 300px;
   height: 145px;
   background-color: #F4E7B6;
@@ -1100,6 +1109,7 @@ body {
   width: 53px;
   height: 59px;
   float: right;
+  bottom: 10px;
 }
 
 ::-webkit-scrollbar {
@@ -1206,6 +1216,7 @@ padding-left:180px;
   width: 120px;
   height: 42px;
   margin-top: 40px;
+  cursor: pointer;
 }
 
 .requset_share{
@@ -1606,6 +1617,12 @@ span {vertical-align: baseline;}
   color: #fff;
 }
 
+#teamname {
+  color: rgba(255, 255, 255, 0.666);
+  font-size: 16px;
+  font-weight: 700;
+  /* teamname을 맨 아래 고정시키는건 위에 있는 요소에 margin bottom 해서 하기. teamname에 마진탑 주면 로그인페이지에서 teamname이 아래로 밀림 */
+}
 .icon-link {
   overflow: scroll;
   font-family: 'NanumSquareRound';

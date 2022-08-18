@@ -39,7 +39,7 @@
             <span style="color: white;">|</span>
             <button type="button" @click="pwBtnOn" id="pwfindBtn">비밀번호 찾기</button>
           </div>
-          <div id="teamname">teamname</div>
+          <div id="teamname">team RUDOLF</div>
     </div>
   </div>
 
@@ -444,7 +444,9 @@ body {
 }
 
 #teamname {
-  color: white;
+  color: rgba(255, 255, 255, 0.666);
+  font-size: 16px;
+  font-weight: 700;
   /* teamname을 맨 아래 고정시키는건 위에 있는 요소에 margin bottom 해서 하기. teamname에 마진탑 주면 로그인페이지에서 teamname이 아래로 밀림 */
 }
 
