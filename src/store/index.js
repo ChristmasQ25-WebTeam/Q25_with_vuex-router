@@ -8,28 +8,20 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   /* eslint-disable */
   state: {
-    token : null,
     userInfo: null,
     isLogin: false,
     isError: false,
     isLoading: false,
-    stampNumList: null,
+    isEmail:false,
+    isEmailError:false,
   },
   mutations: {
-    // 스탬프붙일 상자번호 불러오기
-    stampNum(state, payload){
-      state.stampNumList = payload
-    },
-    // 토큰값 가져가기
-    getTokentoMain(state, payload){
-      state.token = payload
-    },
-
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
       state.isError = false
       state.userInfo = payload
+      
     },
     // 이메일 또는 비번 실패했을 때,
     loginError(state) {
@@ -61,7 +53,20 @@ export default new Vuex.Store({
     },
     loadingOff(state) {
       state.isLoading = false
-    }
+    },
+
+     //비밀번호 찾기 (이메일 존재)
+     isPwEmail(state){
+      state.isEmail=true,
+      state.isEmailError=false
+    },
+    
+    //비밀번호 찾기 (이메일 존재X)
+    noPwEmail(state){
+      state.isEmail=false,
+      state.isEmailError=true
+    },
+
   },
   actions: {
     
@@ -104,8 +109,6 @@ export default new Vuex.Store({
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
-          commit('getTokentoMain', token)
-          commit('stampNum', stampNumList)
           router.push({name:'mainpage', config})
         })
         .catch(err => {
@@ -126,14 +129,14 @@ export default new Vuex.Store({
     logout({commit}) {
       commit('logout')
       // localStorage.removeItem('access_token')
-      // router.push({name: 'home'})
+      router.push({name: 'home'})
 
-    //   axios
-    //   .delete('http://localhost:3001/api/members/logout', {data: {userIdx : userInfo.userIdx}})
-    //   .then(response => {
-    //     // handle success
-    //     console.log(response);
-    // })
+      axios
+      .delete('http://localhost:3001/api/members/logout')
+      .then(response => {
+        // handle success
+        console.log(response);
+    })
     .catch(error => {
         // handle error
         console.log(error);
@@ -149,3 +152,35 @@ export default new Vuex.Store({
     }
   }
 )
+
+  //비밀번호 찾기 
+  //유효한 이메일 검사 (필요할지?) 
+  /*emailValidation = (key) => (e) => {
+    if (key === 'email') {
+      let emailreg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+      let email = e.target.value;
+      if (email.length > 0 && false === emailreg.test(email)) {
+        console.log('올바른 이메일 형식이 아닙니다')
+      }else
+  */ 
+axios({
+method: 'post',
+url: 'http://localhost:3001/api/members/pw',
+data: {
+ email
+},
+})
+//DB에 동일 데이터가 존재한다면 (이메일을 보내는 경우)
+.then((res) => {
+  //status code: 1000
+  if (res.data !== null) { //DB의 데이터가 담겨서 오는 것은 res.data?
+    console.log(res);
+    commit('isPwEmail')
+  } 
+})
+//이메일이 없는 경우
+.catch((err) => {
+  //status code: 2015
+  console.log(err);
+  commit('NoPwEmail')
+})
