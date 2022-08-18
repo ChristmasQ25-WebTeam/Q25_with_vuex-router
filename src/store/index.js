@@ -161,7 +161,7 @@ export default new Vuex.Store({
   }
 )
 
-  //비밀번호 찾기 
+  //비밀번호 보내기
   //유효한 이메일 검사 (필요할지?) 
   /*emailValidation = (key) => (e) => {
     if (key === 'email') {
