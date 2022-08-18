@@ -81,9 +81,9 @@
             <span id="Q_inquestion">Q{{ item.qNum }}. &nbsp;</span>
             <span>{{ item.qnacontent }}</span><br><br>
             <span id="Q_inquestion">A. &nbsp;</span>
-            <span>{{ item.answer }}</span>
+            <div><span>{{ item.answer }}</span>
+            <img src="../assets/02_stamp.png" id="stampimg2"></div>
             </div>
-            <img src="../assets/02_stamp.png" id="stampimg2">
           </div>
         </div>
       </div>
@@ -1072,7 +1072,7 @@ body {
 .questionBox {
   cursor: pointer;
   width: 300px;
-  height: 145px;
+  height: auto;
   background-color: #F4E7B6;
   border-radius: 5px;
   font-family: 'NanumSquareRound';
@@ -1085,12 +1085,11 @@ body {
 
 .questionBox_line {
   width: 290px;
-  height: 135px;
+  height: auto;
   border: 3px solid #920000;
   border-radius: 10px;
   background-color: #F4E7B6;
-  margin: 0 auto;
-  margin-top: 2px;
+  margin: 2px;
   position: fixed;
   position: sticky;
 }
