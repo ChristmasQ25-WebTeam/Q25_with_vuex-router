@@ -701,6 +701,9 @@ export default {
               this.q= res.data.result.qnacontent
               this.a= res.data.result.answer
             })
+            .catch(err => {
+             console.log(err);
+            })
 
         if(this.opened==0){
           this.ooops=true;
@@ -745,7 +748,7 @@ export default {
     },
     submit() {
       this.Q_list_page=true;
-      this.qna_answer_page=false;
+        this.qna_answer_page=false;
       axios
       .patch('http://localhost:3001/api/members/useranswer',{
         
@@ -761,6 +764,8 @@ export default {
         
         // console.log(this.stampNumList)
         // console.log(res.data.result.qNum)
+        
+        
       })
     }
 
