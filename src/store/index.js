@@ -16,6 +16,14 @@ export default new Vuex.Store({
     isEmailError:false,
   },
   mutations: {
+      // 스탬프붙일 상자번호 불러오기
+      stampNum(state, payload){
+        state.stampNumList = payload
+      },
+      // 토큰값 가져가기
+      getTokentoMain(state, payload){
+        state.token = payload
+      },
     // 로그인이 성공했을 때,
     loginSuccess(state, payload) {
       state.isLogin = true
