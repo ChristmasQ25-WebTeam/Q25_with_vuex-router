@@ -104,7 +104,16 @@ export default new Vuex.Store({
               stampNumList.push(userInfo.question[i].qNum)
             }
           }
-          console.log('답변 있는 상자 : '+ stampNumList)
+          console.log('답변 있는 질문상자 : '+ stampNumList)
+          let openlist=[]
+          
+          for(let j=0; j<25; j++){
+            if(userInfo.question[j].opened ==1){
+              openlist.push(userInfo.question[j].qNum)
+            }
+          }
+
+          console.log('오픈 된 질문상자 : ' + openlist)
           
 
           commit('loginSuccess',userInfo)
