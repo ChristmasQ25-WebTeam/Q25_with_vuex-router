@@ -12,7 +12,6 @@
             아직 질문이 오픈되지 않았어요!
             <br>
             질문은 해당일 자정에 오픈됩니다.
-            {{stampNumList}}
             <br>
             조금만 기다려주세요:)
           </div>
@@ -463,7 +462,7 @@ export default {
         }
     },
     methods: {
-      logout_(){
+    logout_(){
         axios
         .delete('http://localhost:3001/api/members/logout', {data: {userIdx : this.userInfo.userIdx}})
         .then(response => {
@@ -571,6 +570,8 @@ export default {
       this.qna_answer_page=false;
     },
 
+    // 이 아래 랜덤큐 함수 사용되는 곳이 없는데 지워도 상관없으면 카톡방에 말씀부탁드려요! 
+    // 다들 말씀해주시면 지울게요! -엘-
     random_Q(){
       console.log(this.nickName)
     },
@@ -696,8 +697,7 @@ export default {
       this.opened = this.userInfo.question[this.dayNum-1].opened;
       this.answerY_N = this.userInfo.question[this.dayNum-1].answerY_N
       
-      console.log(this.userInfo.question[this.dayNum-1])
-      console.log("opened : " + this.opened, 'answerY_N : '+this.answerY_N)
+      console.log("opened:" + this.opened, 'answerY_N:'+this.answerY_N)
 
       let config2 = {
               headers : {
@@ -708,12 +708,9 @@ export default {
                 qNum : parseInt(this.dayNum) 
               }
             }
-            console.log(this.token)
-            console.log(config2)
             axios
             .get('http://localhost:3001/api/members/qnapage', config2)
             .then(res => {
-              console.log(res.data)
               this.q= res.data.result.qnacontent
               this.a= res.data.result.answer
             })
@@ -726,7 +723,7 @@ export default {
         }
         else if(this.opened==1){
           // this.dayNum = parseInt(event.target.nextSibling.data);
-          console.log(this.dayNum);
+          console.log('dayNum:'+ this.dayNum);
 
           if(this.answerY_N==0){
             // this.loading_page=true;
@@ -775,22 +772,12 @@ export default {
       })
       .then(res => {
         this.answerY_N = res.data.result.answerY_N;
-        // this.$router.push('/main');
-          // this.stampNumList.push(res.data.result.qNum)
-        
-        // console.log(this.stampNumList)
-        // console.log(res.data.result.qNum)
-  
-        
       })
       axios
-      .get('http://localhost:3001/api/members/question', this.config) // header 설정을 위해 config 선언, get 두번째 인자.
+      .get('http://localhost:3001/api/members/question', this.config)
       .then(res => {
             this.userInfo.question = res.data.result.question;
-            // console.log(res.data.result)
           })
-
-
     }
 
     }

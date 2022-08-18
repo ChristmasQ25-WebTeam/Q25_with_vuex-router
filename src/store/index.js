@@ -97,7 +97,6 @@ export default new Vuex.Store({
             question: res.data.result.question,
             userIdx : userIdx
           }
-          console.log(res)
           let stampNumList=[];
 
           for (let i=0; i<25; i++){
