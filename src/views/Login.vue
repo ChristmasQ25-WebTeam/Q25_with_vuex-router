@@ -223,7 +223,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isError', 'isLoading'])
+    ...mapState(['isLogin', 'isError', 'isLoading','isEmail','isEmailError'])
   },
   methods: {
     ...mapActions(['login','close']),

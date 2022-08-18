@@ -171,17 +171,18 @@ export default new Vuex.Store({
         console.log('올바른 이메일 형식이 아닙니다')
       }else
   */ 
+
 axios({
 method: 'post',
 url: 'http://localhost:3001/api/members/pw',
 data: {
- email
+  "email": email,
 },
 })
 //DB에 동일 데이터가 존재한다면 (이메일을 보내는 경우)
 .then((res) => {
   //status code: 1000
-  if (res.data !== null) { //DB의 데이터가 담겨서 오는 것은 res.data?
+  if (res.data !== null) { //DB의 데이터가 담겨서 오는 것은 res.data(email)?
     console.log(res);
     commit('isPwEmail')
   } 
