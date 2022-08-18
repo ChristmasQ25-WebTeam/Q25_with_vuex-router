@@ -3,7 +3,7 @@
   <!-- 리지 : 로그인창 view -->
   <div v-if="login_page == true">
     <!-- 로그인 실패 모달창 페이지 -->
-    <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
+  <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
     <div></div><div></div><div></div><div></div><div></div><div></div></div>
 
       <div class="container">
@@ -47,7 +47,7 @@
   <div v-if="pw_find_page == true">
 
 <!--이메일이 있는 경우 모달창 -->
-    <div class="modal_bg" v-if="isEmail">
+    <div class="modal_bg" v-if="isEmail==true">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
@@ -60,7 +60,7 @@
     </div>
 
     <!--이메일 없는 경우 모달창 -->
-    <div class="modal_bg" v-if="isEmailError">
+    <div class="modal_bg" v-if="isEmailError==true">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
@@ -98,7 +98,7 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="login({email})">완료</button>
+      <button class="jm_finish-btn" @click="pwsend_submit">완료</button>
 </div>
 
 <!-- 미니 : 회원가입 view-->
@@ -189,6 +189,9 @@
 /* eslint-disable */
 import { mapState, mapActions } from 'vuex'
 import { registerUser } from '../api/index';
+import { pwsend } from '../api/pwsend';
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -223,9 +226,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['isLogin', 'isError', 'isLoading','isEmail','isEmailError'])
+    ...mapState(['isLogin', 'isError', 'isLoading'])
   },
   methods: {
+
     ...mapActions(['login','close']),
 
     signUpBtnOn(){
@@ -297,6 +301,7 @@ export default {
         this.signUp_page=false;
       }
     },
+
     initForm() {
       this.nickName = '';
       this.password = '';
@@ -345,6 +350,24 @@ export default {
         this.email_true = this.email;
       }
     },
+
+    async pwsend_submit(){      
+      const emaildata={
+          email:this.email
+        }
+        console.log(emaildata)
+        const { data } = await pwsend(emaildata);
+        console.log(data);
+        if(this.email!=''){
+          this.isEmail ==true
+          this.isEmailError==false
+        }
+        
+        else if(data==''){
+          this.isEmail ==false
+          this.isEmailError==true
+        }
+      },
     chkOverlap(){
       this.chkEmail = true;
     },

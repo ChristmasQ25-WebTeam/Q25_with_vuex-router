@@ -12,8 +12,6 @@ export default new Vuex.Store({
     isLogin: false,
     isError: false,
     isLoading: false,
-    isEmail:false,
-    isEmailError:false,
   },
   mutations: {
       // 스탬프붙일 상자번호 불러오기
@@ -61,18 +59,6 @@ export default new Vuex.Store({
     },
     loadingOff(state) {
       state.isLoading = false
-    },
-
-     //비밀번호 찾기 (이메일 존재)
-     isPwEmail(state){
-      state.isEmail=true,
-      state.isEmailError=false
-    },
-    
-    //비밀번호 찾기 (이메일 존재X)
-    noPwEmail(state){
-      state.isEmail=false,
-      state.isEmailError=true
     },
 
   },
@@ -161,35 +147,4 @@ export default new Vuex.Store({
   }
 )
 
-  //비밀번호 보내기
-  //유효한 이메일 검사 (필요할지?) 
-  /*emailValidation = (key) => (e) => {
-    if (key === 'email') {
-      let emailreg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-      let email = e.target.value;
-      if (email.length > 0 && false === emailreg.test(email)) {
-        console.log('올바른 이메일 형식이 아닙니다')
-      }else
-  */ 
-
-axios({
-method: 'post',
-url: 'http://localhost:3001/api/members/pw',
-data: {
-  "email": email,
-},
-})
-//DB에 동일 데이터가 존재한다면 (이메일을 보내는 경우)
-.then((res) => {
-  //status code: 1000
-  if (res.data !== null) { //DB의 데이터가 담겨서 오는 것은 res.data(email)?
-    console.log(res);
-    commit('isPwEmail')
-  } 
-})
-//이메일이 없는 경우
-.catch((err) => {
-  //status code: 2015
-  console.log(err);
-  commit('NoPwEmail')
-})
+ 
