@@ -41,9 +41,9 @@
         <img v-if="i<10" :src="require(`@/assets/06_gift0${i}.png`)" alt="image" id='giftbox' >
         <img v-else :src="require(`@/assets/06_gift${i}.png`)" alt="image" id='giftbox' >
           {{i}}
-            <div  style="position:absolute;">
-              <img v-if="userInfo.question[i-1].answerY_N" src="../assets/03_gift_opened_sticker.png" style="width:50px">
-            </div>
+          <div style="position:absolute;">
+            <img v-if="userInfo.question[i-1].answerY_N"  src="../assets/03_gift_opened_sticker.png" style="width:50px">
+          </div>
         
       </div>
     </div>
@@ -386,6 +386,7 @@ import data from '../assets/test_data1.js';
 // import data2 from '../assets/test_data2.js';
 import { changePw } from '../api/changepw';
 import question from '../assets/test_data1.js';
+// import { config } from 'vue/types/umd';
 
 
 export default {
@@ -394,7 +395,7 @@ export default {
     //   boxImg : ''
     // }),
     computed: {
-        ...mapState(['userInfo', 'token', 'stampNumList'])
+        ...mapState(['userInfo', 'token', 'stampNumList', 'config'])
     },
     data() {
         return{
@@ -679,8 +680,19 @@ export default {
     },
 
     open_question(event) {
-      console.log(event.target)
+      
+      
+      // if (event.target.nextSibling){
+      //   console.log(event.target.nextSibling)
+      //   this.dayNum = parseInt(event.target.nextSibling.data);
+      // }
+      // else {
+      //   console.log(event.target.previousSibling)
+      //   this.dayNum = parseInt(event.target.previousSibling.data);
+      // }
+      
       this.dayNum = parseInt(event.target.nextSibling.data);
+      
       this.opened = this.userInfo.question[this.dayNum-1].opened;
       this.answerY_N = this.userInfo.question[this.dayNum-1].answerY_N
       
@@ -752,7 +764,7 @@ export default {
     },
     submit() {
       this.Q_list_page=true;
-        this.qna_answer_page=false;
+      this.qna_answer_page=false;
       axios
       .patch('http://localhost:3001/api/members/useranswer',{
         
@@ -768,9 +780,17 @@ export default {
         
         // console.log(this.stampNumList)
         // console.log(res.data.result.qNum)
-        
+  
         
       })
+      axios
+      .get('http://localhost:3001/api/members/question', this.config) // header 설정을 위해 config 선언, get 두번째 인자.
+      .then(res => {
+            this.userInfo.question = res.data.result.question;
+            // console.log(res.data.result)
+          })
+
+
     }
 
     }
