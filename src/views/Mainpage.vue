@@ -79,11 +79,11 @@
         <div @click="goto_QnApage" class="questionBox">
           <div class="questionBox_line">
             <div class="questions">
-            <span id="Q_inquestion">Q{{ item.qNum+1 }}. &nbsp;</span>
+            <span id="Q_inquestion">Q{{ item.qNum }}. &nbsp;</span>
             <span>{{ item.qnacontent }}</span><br><br>
             <span id="Q_inquestion">A. &nbsp;</span>
-            <div><span>{{ item.answer }}</span>
-            <img src="../assets/02_stamp.png" id="stampimg2"></div>
+            <span>{{ item.answer }}</span>
+            <img src="../assets/02_stamp.png" id="stampimg2">
             </div>
           </div>
         </div>
