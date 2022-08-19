@@ -376,10 +376,7 @@ export default {
           this.isEmailError=true;
         }
       },
-
-    initemail() {
-      this.email = '';
-    },
+      
     chkOverlap(){
       this.chkEmail = true;
     },
