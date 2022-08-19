@@ -120,7 +120,7 @@
 <form id= "request_textarea" action="" method="POST">
 <textarea v-model="a" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180" id="answer"> </textarea>
 <br/>
-<span id="counter">({{a.length}}자 / 최대 180자)</span>
+<span id="counter" v-if="a">({{a.length+1}}자 / 최대 180자)</span>
 </form>
 
 <div class="requset_share">
@@ -694,12 +694,12 @@ export default {
         // console.log('포함되어있음')
         
         this.dayNum = parseInt(event.target.parentNode.previousSibling.data);
-        console.log(this.dayNum)
+        // console.log(this.dayNum)
       }
       else{
         // console.log('없음')
         this.dayNum = parseInt(event.target.nextSibling.data);
-        console.log(this.dayNum)
+        // console.log(this.dayNum)
       }
 
       
