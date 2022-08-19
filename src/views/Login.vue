@@ -44,6 +44,7 @@
   </div>
 
 <!-- 자몽 : 비번찾기 view -->
+
   <div v-if="pw_find_page == true">
 
 <!--이메일이 있는 경우 모달창 -->
@@ -54,7 +55,7 @@
           <span class="jm_modal_title">발송하였습니다</span>
           <span class="mail">메일함을 확인해주세요</span>
           <hr />
-          <span @click="close" class="ok">확인</span>
+          <span @click="Email_btn" class="ok">확인</span>
         </div>
       </div>
     </div>
@@ -66,7 +67,7 @@
           <span class="jm_modal_title">등록되지 않은</span>
           <span class="jm_modal_title">이메일입니다</span>
           <hr>
-        <span @click="close" class="ok">확인</span>
+        <span @click="Email_btn" class="ok">확인</span>
         </div>
       </div>
       </div>
@@ -216,7 +217,8 @@ export default {
       chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
-
+      isEmail: false,
+      isEmailError:false,
       emailformOpen: false,
 
       password_true:'',
@@ -245,6 +247,11 @@ export default {
       this.start_page=false;
       this.login_page=true;
       this.signUp_page = false;
+    },
+
+    Email_btn(){
+      this.isEmail=false;
+      this.isEmailError=false;
     },
 
     pwtohomebtn(){
@@ -358,16 +365,21 @@ export default {
         console.log(emaildata)
         const { data } = await pwsend(emaildata);
         console.log(data);
-        if(this.email!=''){
-          this.isEmail ==true
-          this.isEmailError==false
+
+        if (data.code == 1000){
+          this.isEmail = true;
+          this.isEmailError=false;
         }
         
-        else if(data==''){
-          this.isEmail ==false
-          this.isEmailError==true
+        else if (data.code == 2015){
+          this.isEmail =false;
+          this.isEmailError=true;
         }
       },
+
+    initemail() {
+      this.email = '';
+    },
     chkOverlap(){
       this.chkEmail = true;
     },
@@ -681,14 +693,14 @@ header {
 
 #email_inputBox2 {
   width: 220px;
-  height: 25px;
+  height: 35px;
   border-radius: 5px;
   border: none;
   margin: 5px;
   text-align: center;
   margin-top: 50px;
 }
-
+input:focus {outline: none;}
 .key_icon img {
   padding-top: 100px;
   width: 120px;
@@ -731,7 +743,7 @@ header {
 
 .no_email_modalbox{
     position: fixed;
-    top: -140px;
+    top: -40px;
     bottom: 0;
     left: 0;
     right: 0;
@@ -742,9 +754,9 @@ header {
     height: 140px;
 }
 
-/*.pw_find_modalbox {
+.pw_find_modalbox {
   position: fixed;
-  top: -140px;
+  top: -40px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -753,7 +765,8 @@ header {
   border-radius: 8px;
   width: 260px;
   height: 170px;
-}*/
+}
+
 .modal_bg .password_represent {
   display: flex;
   flex-direction: column;
