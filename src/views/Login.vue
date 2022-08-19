@@ -3,7 +3,7 @@
   <!-- 리지 : 로그인창 view -->
   <div v-if="login_page == true">
     <!-- 로그인 실패 모달창 페이지 -->
-    <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
+  <div class="lds-spinner modal-black" v-if="isLoading"><div></div><div></div><div></div><div></div><div></div><div></div>
     <div></div><div></div><div></div><div></div><div></div><div></div></div>
 
       <div class="container">
@@ -44,29 +44,30 @@
   </div>
 
 <!-- 자몽 : 비번찾기 view -->
+
   <div v-if="pw_find_page == true">
 
 <!--이메일이 있는 경우 모달창 -->
-    <div class="modal_bg" v-if="isEmail">
+    <div class="modal_bg" v-if="isEmail==true">
       <div class="pw_find_modalbox">
         <div class="password_represent">
           <span class="jm_modal_title">임시 비밀번호를</span>
           <span class="jm_modal_title">발송하였습니다</span>
           <span class="mail">메일함을 확인해주세요</span>
           <hr />
-          <span @click="close" class="ok">확인</span>
+          <span @click="Email_btn" class="ok">확인</span>
         </div>
       </div>
     </div>
 
     <!--이메일 없는 경우 모달창 -->
-    <div class="modal_bg" v-if="isEmailError">
+    <div class="modal_bg" v-if="isEmailError==true">
       <div class="no_email_modalbox">
         <div class= "password_represent">
           <span class="jm_modal_title">등록되지 않은</span>
           <span class="jm_modal_title">이메일입니다</span>
           <hr>
-        <span @click="close" class="ok">확인</span>
+        <span @click="Email_btn" class="ok">확인</span>
         </div>
       </div>
       </div>
@@ -98,7 +99,7 @@
       />
     </div>
 
-      <button class="jm_finish-btn" @click="login({email})">완료</button>
+      <button class="jm_finish-btn" @click="pwsend_submit">완료</button>
 </div>
 
 <!-- 미니 : 회원가입 view-->
@@ -189,6 +190,9 @@
 /* eslint-disable */
 import { mapState, mapActions } from 'vuex'
 import { registerUser } from '../api/index';
+import { pwsend } from '../api/pwsend';
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -213,7 +217,8 @@ export default {
       chkEmail: false,
       emailOpen: false,
       pwformOpen: false,
-
+      isEmail: false,
+      isEmailError:false,
       emailformOpen: false,
 
       password_true:'',
@@ -226,6 +231,7 @@ export default {
     ...mapState(['isLogin', 'isError', 'isLoading'])
   },
   methods: {
+
     ...mapActions(['login','close']),
 
     signUpBtnOn(){
@@ -241,6 +247,11 @@ export default {
       this.start_page=false;
       this.login_page=true;
       this.signUp_page = false;
+    },
+
+    Email_btn(){
+      this.isEmail=false;
+      this.isEmailError=false;
     },
 
     pwtohomebtn(){
@@ -297,6 +308,7 @@ export default {
         this.signUp_page=false;
       }
     },
+
     initForm() {
       this.nickName = '';
       this.password = '';
@@ -345,6 +357,26 @@ export default {
         this.email_true = this.email;
       }
     },
+
+    async pwsend_submit(){      
+      const emaildata={
+          email:this.email
+        }
+        console.log(emaildata)
+        const { data } = await pwsend(emaildata);
+        console.log(data);
+
+        if (data.code == 1000){
+          this.isEmail = true;
+          this.isEmailError=false;
+        }
+        
+        else if (data.code == 2015){
+          this.isEmail =false;
+          this.isEmailError=true;
+        }
+      },
+      
     chkOverlap(){
       this.chkEmail = true;
     },
@@ -658,14 +690,14 @@ header {
 
 #email_inputBox2 {
   width: 220px;
-  height: 25px;
+  height: 35px;
   border-radius: 5px;
   border: none;
   margin: 5px;
   text-align: center;
   margin-top: 50px;
 }
-
+/*input:focus {outline: none;}*/
 .key_icon img {
   padding-top: 100px;
   width: 120px;
@@ -708,7 +740,7 @@ header {
 
 .no_email_modalbox{
     position: fixed;
-    top: -140px;
+    top: -40px;
     bottom: 0;
     left: 0;
     right: 0;
@@ -719,9 +751,9 @@ header {
     height: 140px;
 }
 
-/*.pw_find_modalbox {
+.pw_find_modalbox {
   position: fixed;
-  top: -140px;
+  top: -40px;
   bottom: 0;
   left: 0;
   right: 0;
@@ -730,7 +762,8 @@ header {
   border-radius: 8px;
   width: 260px;
   height: 170px;
-}*/
+}
+
 .modal_bg .password_represent {
   display: flex;
   flex-direction: column;

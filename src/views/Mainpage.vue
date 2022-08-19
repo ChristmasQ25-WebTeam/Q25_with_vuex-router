@@ -94,7 +94,6 @@
       </div>
   </div>
 <!-- 자몽: 질문 답변하기 디자인 view -->
-<!--글 발행기능 아직 구현 X => 공부필요-->
   <div v-if="qna_answer_page==true">
 
 <div class ="qna_requset_header">

@@ -8,7 +8,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   /* eslint-disable */
   state: {
-    token : null,
     userInfo: null,
     isLogin: false,
     isError: false,
@@ -35,6 +34,7 @@ export default new Vuex.Store({
       state.isLogin = true
       state.isError = false
       state.userInfo = payload
+      
     },
     // 이메일 또는 비번 실패했을 때,
     loginError(state) {
@@ -66,7 +66,8 @@ export default new Vuex.Store({
     },
     loadingOff(state) {
       state.isLoading = false
-    }
+    },
+
   },
   actions: {
     
@@ -119,9 +120,11 @@ export default new Vuex.Store({
           commit('loginSuccess',userInfo)
           commit('saveStateToStorage')
           commit('loadingOff')
+
           commit('getTokentoMain', token)
           commit('stampNum', stampNumList)
           commit('getConfigtoMain', config)
+
           router.push({name:'mainpage', config})
         })
         .catch(err => {
@@ -142,14 +145,14 @@ export default new Vuex.Store({
     logout({commit}) {
       commit('logout')
       // localStorage.removeItem('access_token')
-      // router.push({name: 'home'})
+      router.push({name: 'home'})
 
-    //   axios
-    //   .delete('http://localhost:3001/api/members/logout', {data: {userIdx : userInfo.userIdx}})
-    //   .then(response => {
-    //     // handle success
-    //     console.log(response);
-    // })
+      axios
+      .delete('http://localhost:3001/api/members/logout')
+      .then(response => {
+        // handle success
+        console.log(response);
+    })
     .catch(error => {
         // handle error
         console.log(error);
@@ -165,3 +168,5 @@ export default new Vuex.Store({
     }
   }
 )
+
+ 
