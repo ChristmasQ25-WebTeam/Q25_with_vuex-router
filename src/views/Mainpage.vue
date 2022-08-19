@@ -781,6 +781,7 @@ export default {
         
       })
       .then(res => {
+        console.log(res.data.result.answerY_N)
         this.answerY_N = res.data.result.answerY_N;
       })
       axios
@@ -1194,11 +1195,17 @@ display: none;
 
 .question_number{
   padding: 6px;
+  /* background-color: #5e80f0; */
+  border-radius: 5px;
+  color: #fff;
+  /* width: 120px; */
+  /* margin: 30px; */
 }
 
 .question_contents{
-  margin-left : auto;
-  margin-right : auto;
+  /* margin-left : auto;
+  margin-right : auto; */
+  /* margin: 30px; */
   }
 .request_question{
   display: flex;
