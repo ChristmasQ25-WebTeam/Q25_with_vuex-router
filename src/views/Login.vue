@@ -697,7 +697,7 @@ header {
   text-align: center;
   margin-top: 50px;
 }
-input:focus {outline: none;}
+/*input:focus {outline: none;}*/
 .key_icon img {
   padding-top: 100px;
   width: 120px;
