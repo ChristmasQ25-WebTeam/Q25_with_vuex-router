@@ -35,14 +35,13 @@
     </div>
 
     <div id="allBox">
-      <!-- <div class="stamp_sticker"></div> -->
       <div v-for="i in 25" :key="i" @click="open_question" style="position : relative">
         <img v-if="i<10" :src="require(`@/assets/06_gift0${i}.png`)" alt="image" id='giftbox' >
         <img v-else :src="require(`@/assets/06_gift${i}.png`)" alt="image" id='giftbox' >
-          {{i}}
-          <div style="position:absolute;">
-            <img v-if="userInfo.question[i-1].answerY_N"  src="../assets/03_gift_opened_sticker.png" style="width:50px">
-          </div>
+        {{i}}
+        <div style="position:absolute;" >
+          <img v-if="userInfo.question[i-1].answerY_N"  src="../assets/03_gift_opened_sticker.png" style="width:50px" class="stamp_sticker">
+        </div>
         
       </div>
     </div>
@@ -121,7 +120,7 @@
 <form id= "request_textarea" action="" method="POST">
 <textarea v-model="a" cols="40" rows="10"  placeholder="행복했던 순간을 떠올려보세요:)" maxlength="180" id="answer"> </textarea>
 <br/>
-<span id="counter">({{qna_answer.length}}자 / 최대 180자)</span>
+<span id="counter">({{a.length}}자 / 최대 180자)</span>
 </form>
 
 <div class="requset_share">
@@ -691,8 +690,19 @@ export default {
       //   console.log(event.target.previousSibling)
       //   this.dayNum = parseInt(event.target.previousSibling.data);
       // }
+      if(event.target.classList.contains('stamp_sticker')){
+        // console.log('포함되어있음')
+        
+        this.dayNum = parseInt(event.target.parentNode.previousSibling.data);
+        console.log(this.dayNum)
+      }
+      else{
+        // console.log('없음')
+        this.dayNum = parseInt(event.target.nextSibling.data);
+        console.log(this.dayNum)
+      }
+
       
-      this.dayNum = parseInt(event.target.nextSibling.data);
       
       this.opened = this.userInfo.question[this.dayNum-1].opened;
       this.answerY_N = this.userInfo.question[this.dayNum-1].answerY_N
@@ -830,14 +840,14 @@ body {
   padding: 15px;
   font-size: 16px;
 }
-
+/* 
 .stamp_sticker {
   width: 100px;
   height: 100px;
   background-image: url('../assets/02_stamp.png');
   background-size: cover;
   position: fixed;
-}
+} */
 .fade-enter-active, .fade-leave-active {
   transition: opacity 1.5s;
 }
@@ -849,6 +859,7 @@ body {
   width: 24px;
   top: 25px;
   right: 30px;
+  cursor: pointer;
 }
 #day_text {
   font-size: 50px;
